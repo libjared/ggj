@@ -12,6 +12,7 @@ public class Program {
             AppGameContainer appgc;
             appgc = new AppGameContainer(new MyGame("Simple Slick Game"));
             appgc.setDisplayMode(640, 480, false);
+            appgc.setVSync(true);
             appgc.start();
         }
         catch (SlickException ex)
