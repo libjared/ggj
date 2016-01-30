@@ -6,12 +6,13 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
 public class Program {
-
     public static void main(String[] args) {
         try {
             AppGameContainer appgc;
-            appgc = new AppGameContainer(new MyGame("Simple Slick Game"));
-            appgc.setDisplayMode(640, 480, false);
+            int w = 800;
+            int h = 600;
+            appgc = new AppGameContainer(new MyGame("Simple Slick Game", w, h));
+            appgc.setDisplayMode(w, h, false);
             appgc.setVSync(true);
             appgc.start();
         } catch (SlickException ex) {
