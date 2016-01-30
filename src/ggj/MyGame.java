@@ -22,9 +22,11 @@ public class MyGame extends BasicGame {
 
     @Override
     public void init(GameContainer gc) throws SlickException {
-        left = new Board(0);
-        right = new Board(WINDOWW - Board.WIDTH*32);
+        left = new Board(0, true);
+        right = new Board(WINDOWW - Board.WIDTH*32, false);
+        gc.getInput().initControllers();
         
+        ContentContainer.LoadAllContent();
     }
 
     @Override

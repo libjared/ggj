@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ggj;
 
 import org.newdawn.slick.Image;
@@ -13,34 +8,37 @@ import org.newdawn.slick.SlickException;
  * @author Jotham Callaway
  */
 public class ContentContainer {
-    private Image red = new Image("content//red.png");
-    private Image blue = new Image("content//blue.png");
-    private Image green = new Image("content//green.png");
-    private Image purple = new Image("content//purple.png");
-    private Image yellow = new Image("content//yellow.png");
+    private static Image red; 
+    private static Image blue; 
+    private static Image green;
+    private static Image purple;
+    private static Image yellow;
     
-    public ContentContainer() throws SlickException{
-        
+    public static void LoadAllContent() throws SlickException {
+        red = new Image("content/red.png");
+        blue = new Image("content/blue.png");
+        green = new Image("content/green.png");
+        purple = new Image("content/purple.png");
+        yellow = new Image("content/yellow.png");
     }
     
-    public Image getRed(){
+    public static Image getRed(){
         return red;
     }
     
-    public Image getBlue(){
+    public static Image getBlue(){
         return blue;
     }
     
-    public Image getGreen(){
+    public static Image getGreen(){
         return green;
     }
     
-    public Image getPurple(){
+    public static Image getPurple(){
         return purple;
     }
     
-    public Image getYellow(){
+    public static Image getYellow(){
         return yellow;
     }
-
 }

@@ -2,6 +2,7 @@ package ggj;
 
 import java.util.ArrayList;
 import java.util.Random;
+import org.newdawn.slick.ControllerListener;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -24,10 +25,14 @@ public class Board {
     int[] fallingGems;
 
     ArrayList<int[]> markedForDeath;
+    
+    boolean PLAYERONE;
 
-    public Board(int offsetx) throws SlickException {
-        this.markedForDeath = new ArrayList<>();
+    public Board(int offsetx, boolean playerOne) throws SlickException {
         OFFSETX = offsetx;
+        PLAYERONE = playerOne;
+        
+        this.markedForDeath = new ArrayList<>();
         spaces = new int[HEIGHT][WIDTH];
 
         testBoard();
@@ -48,17 +53,14 @@ public class Board {
     private boolean kLeftLast;
     private boolean kRightLast;
     private boolean kShufLast;
+    
     private boolean kDown;
     private boolean kLeft;
     private boolean kRight;
     private boolean kShuf;
     
     public void update(GameContainer gc) {
-        Input inp = gc.getInput();
-        kDown = inp.isKeyDown(Input.KEY_DOWN);
-        kLeft = inp.isKeyDown(Input.KEY_LEFT);
-        kRight = inp.isKeyDown(Input.KEY_RIGHT);
-        kShuf = inp.isKeyDown(Input.KEY_Z);
+        updateInputs(gc);
 
         updateFallingGems();
 
@@ -69,11 +71,26 @@ public class Board {
         if (gravityTimer()) {
             applyGravity();
         }
+    }
 
+    private void updateInputs(GameContainer gc) {
         //last
         kLeftLast = kLeft;
         kRightLast = kRight;
         kShufLast = kShuf;
+        
+        Input inp = gc.getInput();
+        if (PLAYERONE) {
+            kDown = inp.isKeyDown(Input.KEY_DOWN);
+            kLeft = inp.isKeyDown(Input.KEY_LEFT);
+            kRight = inp.isKeyDown(Input.KEY_RIGHT);
+            kShuf = inp.isKeyDown(Input.KEY_Z);
+        } else {
+            kDown = inp.isControllerDown(0);
+            kLeft = inp.isControllerLeft(0);
+            kRight = inp.isControllerRight(0);
+            kShuf = inp.isButtonPressed(18, 0);
+        }
     }
     
     final int GRAVTIMERMAX = 30;
@@ -175,13 +192,8 @@ public class Board {
         markedForDeath.clear();
     }
 
-    /**
-     * 567 4 0 321
-     *
-     * @param dir in range [0, 8). 0 is right, 1 is downright.
-     * @return new int[] {x,y}
-     */
     private int[] withDirection(int dir, int n) {
+        //dir in range [0, 8). 0 is right, 1 is downright.
         int retX = 0;
         int retY = 0;
 
@@ -224,6 +236,15 @@ public class Board {
     }
 
     private void updateFallingGems() {
+        //shuffle
+        if (kShuf && !kShufLast) {
+            int[] newGems = new int[3];
+            newGems[0] = fallingGems[2];
+            newGems[1] = fallingGems[0];
+            newGems[2] = fallingGems[1];
+            fallingGems = newGems;
+        }
+        
         //update y
         float fallSpd;
         if (kDown) {
@@ -245,6 +266,7 @@ public class Board {
 
         //collision
         collideFallingGems();
+        
     }
 
     private void collideFallingGems() {
