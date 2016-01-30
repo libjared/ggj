@@ -18,13 +18,13 @@ public class MyGame extends BasicGame {
         super(gamename);
         WINDOWW = windowW;
         WINDOWH = windowH;
-        
-        left = new Board(0);
-        right = new Board(WINDOWW - Board.WIDTH*32);
     }
 
     @Override
     public void init(GameContainer gc) throws SlickException {
+        left = new Board(0);
+        right = new Board(WINDOWW - Board.WIDTH*32);
+        
     }
 
     @Override

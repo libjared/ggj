@@ -162,11 +162,11 @@ public class Board {
 
     private void loadGfx() throws SlickException {
         gemsGfx = new Image[6];
-//        gemsGfx[0] = null; //none
-//        gemsGfx[1] = new Image("content/gemred.png");
-//        gemsGfx[2] = new Image("content/gemgreen.png");
-//        gemsGfx[3] = new Image("content/gemblue.png");
-//        gemsGfx[4] = new Image("content/gemyellow.png");
-//        gemsGfx[5] = new Image("content/gempurple.png");
+        gemsGfx[0] = null; //none
+        gemsGfx[1] = new Image("content/red.png");
+        gemsGfx[2] = new Image("content/green.png");
+        gemsGfx[3] = new Image("content/blue.png");
+        gemsGfx[4] = new Image("content/yellow.png");
+        gemsGfx[5] = new Image("content/purple.png");
     }
 }
