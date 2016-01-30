@@ -1,0 +1,28 @@
+### https://raw.github.com/github/gitignore/fa441f903154d8159ef71db23d4816d802450fef/Java.gitignore
+
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+
+### https://raw.github.com/github/gitignore/fa441f903154d8159ef71db23d4816d802450fef/Global/Netbeans.gitignore
+
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+.nb-gradle/
+
+
+.DS_Store
