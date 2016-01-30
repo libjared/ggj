@@ -45,11 +45,20 @@ public class Board {
         }
     }
 
+    private boolean kLeftLast;
+    private boolean kRightLast;
+    private boolean kShufLast;
+    private boolean kDown;
+    private boolean kLeft;
+    private boolean kRight;
+    private boolean kShuf;
+    
     public void update(GameContainer gc) {
         Input inp = gc.getInput();
         kDown = inp.isKeyDown(Input.KEY_DOWN);
         kLeft = inp.isKeyDown(Input.KEY_LEFT);
         kRight = inp.isKeyDown(Input.KEY_RIGHT);
+        kShuf = inp.isKeyDown(Input.KEY_Z);
 
         updateFallingGems();
 
@@ -57,11 +66,26 @@ public class Board {
 
         processMarkedForDeath();
 
-        applyGravity();
+        if (gravityTimer()) {
+            applyGravity();
+        }
 
         //last
         kLeftLast = kLeft;
         kRightLast = kRight;
+        kShufLast = kShuf;
+    }
+    
+    final int GRAVTIMERMAX = 30;
+    int gravTimer = GRAVTIMERMAX;
+    private boolean gravityTimer() {
+        gravTimer--;
+        if (gravTimer <= 0) {
+            gravTimer = GRAVTIMERMAX;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void findMatches() {
@@ -112,29 +136,37 @@ public class Board {
 
     private void applyGravity() {
         for (int x = 0; x < WIDTH; x++) {
-            compressColumn(x);
+            fallColumn(x);
         }
     }
 
-    private void compressColumn(int x) {
-        int[] newCol = new int[HEIGHT];
-        int newColIndex = 0;
-
-        for (int y = HEIGHT - 1; y >= 0; y--) { //bottom to top
-            int colorHere = spaces[y][x];
-            if (colorHere == 0) {
-                continue;
+    private void fallColumn(int x) {
+        //convert column to arraylist
+        ArrayList<Integer> newCol = new ArrayList<>();
+        for (int y = HEIGHT - 1; y >= 0; y--) {
+            newCol.add(spaces[y][x]);
+        }
+        
+        //delete the first 0 from the bottom
+        for (int i = 0; i < newCol.size(); i++) {
+            if (newCol.get(i) == 0) {
+                newCol.remove(i);
+                break;
             }
-            newCol[newColIndex++] = colorHere;
         }
-
-        //copy newCol back to spaces
-        for (int i = 0; i < newCol.length; i++) {
+        
+        //pad with 0s to get HEIGHT-1 elements
+        while (newCol.size() != HEIGHT) {
+            newCol.add(0);
+        }
+        
+        //copy back to column
+        for (int i = 0; i < HEIGHT; i++) {
             int destY = HEIGHT - i - 1;
-            spaces[destY][x] = newCol[i];
+            spaces[destY][x] = newCol.get(i);
         }
     }
-
+    
     private void processMarkedForDeath() {
         for (int i = 0; i < markedForDeath.size(); i++) {
             int[] gem = markedForDeath.get(i);
@@ -172,12 +204,6 @@ public class Board {
     private boolean isValid(int x, int y) {
         return x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT;
     }
-
-    private boolean kLeftLast;
-    private boolean kRightLast;
-    private boolean kDown;
-    private boolean kLeft;
-    private boolean kRight;
 
     public void draw(Graphics g) throws SlickException {
         for (int y = 0; y < HEIGHT; y++) {
@@ -272,4 +298,5 @@ public class Board {
         gemsGfx[4] = new Image("content/yellow.png");
         gemsGfx[5] = new Image("content/purple.png");
     }
+
 }
