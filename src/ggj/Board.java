@@ -2,7 +2,6 @@ package ggj;
 
 import java.util.ArrayList;
 import java.util.Random;
-import org.newdawn.slick.ControllerListener;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -19,8 +18,6 @@ public class Board {
     //none,R,G,B,Y,P is 0 to 5
     int[][] spaces;
 
-    Image[] gemsGfx;
-
     int fallingGemX = WIDTH / 2;
     float fallingGemY = -3;
     int[] fallingGems;
@@ -35,9 +32,10 @@ public class Board {
         
         this.markedForDeath = new ArrayList<>();
         spaces = new int[HEIGHT][WIDTH];
+        rngBuf = new ArrayList<>();
+        ensureBuffer(100);
 
         testBoard();
-        loadGfx();
         generateFallingGems();
     }
 
@@ -337,24 +335,23 @@ public class Board {
             int color1 = fallingGems[0];
             finalY = fallingGemY * 32;
             float finalBottomY = (fallingGemY + 1 - ratio) * 32;
-            g.drawImage(gemsGfx[color1],
+            g.drawImage(imageCol(color1),
                     finalX, finalY, finalX + 32, finalBottomY,
                     0, 64*ratio, 64, 64);
             
             //second (from first)
             int color2 = fallingGems[1];
             finalY = (fallingGemY + 1 - ratio) * 32;
-            g.drawImage(gemsGfx[color2], finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
+            g.drawImage(imageCol(color2), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
             
             //third (from second)
             int color3 = fallingGems[2];
             finalY = (fallingGemY + 2 - ratio) * 32;
-            g.drawImage(gemsGfx[color3], finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
+            g.drawImage(imageCol(color3), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
             
             //fourth! (from third)
             finalY = (fallingGemY + 3 - ratio) * 32;
-            finalBottomY = (fallingGemY + 3 - ratio) * 32;
-            g.drawImage(gemsGfx[color1], finalX, finalY, finalX + 32, (fallingGemY + 3) * 32,
+            g.drawImage(imageCol(color1), finalX, finalY, finalX + 32, (fallingGemY + 3) * 32,
                     0, 0, 64, ratio*64);
         }
     }
@@ -362,7 +359,7 @@ public class Board {
     private void drawGem(Graphics g, int color, int x, float y) {
         int finalX = x * 32 + OFFSETX;
         float finalY = y * 32;
-        g.drawImage(gemsGfx[color], finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
+        g.drawImage(imageCol(color), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
     }
 
     private void generateFallingGems() {
@@ -391,18 +388,44 @@ public class Board {
         return spaces[y][x] != 0;
     }
 
+    private Image imageCol(int col) {
+        //_rgbyp
+        switch (col) {
+            case 0:
+                return null;
+            case 1:
+                return ContentContainer.getRed();
+            case 2:
+                return ContentContainer.getGreen();
+            case 3:
+                return ContentContainer.getBlue();
+            case 4:
+                return ContentContainer.getYellow();
+            case 5:
+                return ContentContainer.getPurple();
+            default:
+                return null;
+        }
+    }
+    
+    ArrayList<Integer> rngBuf;
     private int randomColor() {
+        int newRand = useRngToMakeANewColor();
+        rngBuf.add(rng.nextInt(newRand));
+        return rngBuf.remove(0);
+    }
+
+    private int useRngToMakeANewColor() {
         return rng.nextInt(5) + 1;
     }
-
-    private void loadGfx() throws SlickException {
-        gemsGfx = new Image[6];
-        gemsGfx[0] = null; //none
-        gemsGfx[1] = new Image("content/red.png");
-        gemsGfx[2] = new Image("content/green.png");
-        gemsGfx[3] = new Image("content/blue.png");
-        gemsGfx[4] = new Image("content/yellow.png");
-        gemsGfx[5] = new Image("content/purple.png");
+    
+    private void ensureBuffer(int n) {
+        while (rngBuf.size() > n) {
+            rngBuf.add(useRngToMakeANewColor());
+        }
     }
-
+    
+    private int[] peekNextThree() {
+        return new int[] { rngBuf.get(0), rngBuf.get(1), rngBuf.get(2) };
+    }
 }
