@@ -2,7 +2,6 @@ package ggj;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Shape;
 
 /**
  *
@@ -50,6 +49,9 @@ public class ContentContainer {
     }
 
     static Image imageFromColor(int col) {
+        if (col == 0)
+            assert Boolean.TRUE;
+        
         //_rgbyp
         switch (col) {
             case 0:

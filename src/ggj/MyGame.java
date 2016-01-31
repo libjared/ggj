@@ -7,8 +7,9 @@ import org.newdawn.slick.SlickException;
 
 public class MyGame extends BasicGame {
 
-    Board left;
-    Board right;
+    static Board left;
+    static Board right;
+    static boolean disableSecondPlayer = true;
     
     int WINDOWW;
     int WINDOWH;
@@ -38,8 +39,8 @@ public class MyGame extends BasicGame {
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         g.drawImage(ContentContainer.getBoardGui(), 0f, 0f);
-        left.draw(g, 32);
-        right.draw(g, WINDOWW - Board.WIDTH*32 - 32);
+        left.draw(g, 30, 30);
+        right.draw(g, WINDOWW - Board.WIDTH*32 - 30, 30);
         SpecialEffects.draw(g);
     }
 }

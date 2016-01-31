@@ -9,6 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Board {
 
@@ -24,6 +25,10 @@ public class Board {
     int[] fallingGems;
 
     ArrayList<int[]> markedForDeath;
+    
+    final int KILLSTOSUMMON = 20;
+    int kills = 0;
+    int summonColor = 0;
     
     boolean PLAYERONE;
 
@@ -52,11 +57,13 @@ public class Board {
     private boolean kLeftLast;
     private boolean kRightLast;
     private boolean kShufLast;
+    private boolean kSummonLast;
     
     private boolean kDown;
     private boolean kLeft;
     private boolean kRight;
     private boolean kShuf;
+    private boolean kSummon;
     
     public void update(GameContainer gc) {
         updateInputs(gc);
@@ -68,6 +75,121 @@ public class Board {
         processMarkedForDeath();
         
         updateGravity();
+        
+        updateSummon();
+    } 
+
+    private void updateSummon() {
+        if (kills >= KILLSTOSUMMON && kSummon && !kSummonLast) {
+            //do the summon
+            applySummon();
+            
+            //then reset
+            kills = 0;
+            summonColor = 0;
+        }
+    }
+    
+    private void applySummon() {
+        //012345
+        //_rgbyp
+        if (true) {
+            doBlueMagic();
+            return;
+        }
+        
+        switch (summonColor) {
+            case 0:
+            default:
+                throw new ArrayIndexOutOfBoundsException();
+            case 1:
+                getOtherBoard().doRedMagic();
+                break;
+            case 2:
+                doGreenMagic();
+                break;
+            case 3:
+                doBlueMagic();
+                break;
+            case 4:
+            case 5:
+        }
+    }
+    
+    private void doBlueMagic() {
+        //shift all to right
+        //int[][] newSpaces = cloneSpaces();
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = WIDTH - 1; x >= 0; x--) {
+                int colorThere;
+                if (isValid(x - 1, y)) {
+                    colorThere = getSpace(y, x - 1);
+                } else {
+                    colorThere = 0;
+                }
+                setSpace(y, x, colorThere);
+            }
+        }
+    }
+
+//    private int[][] cloneSpaces() {
+//        int[][] myInt = new int[spaces.length][];
+//        for(int i = 0; i < spaces.length; i++)
+//        {
+//            int[] aMatrix = spaces[i];
+//            int   aLength = aMatrix.length;
+//            myInt[i] = new int[aLength];
+//            System.arraycopy(aMatrix, 0, myInt[i], 0, aLength);
+//        }
+//        return myInt;
+//    }
+    
+    private void doGreenMagic() {
+        //color snipe
+        int biggestColor = getBiggestColor();
+        
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                int colorHere = getSpace(y, x);
+                if (colorHere == biggestColor) {
+                    markedForDeath.add(new int[] { x, y });
+                }
+            }
+        }
+    }
+    
+    private void doRedMagic() {
+        //spawn junk on the top row
+        for (int x = 0; x < WIDTH; x++) {
+            setSpace(0, x, randomColor());
+        }
+    }
+
+    private int getBiggestColor() {
+        int biggestColor;
+        int[] colorCounts = new int[6]; //dont use index [0]
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                int colorHere = getSpace(y, x);
+                colorCounts[colorHere]++;
+            }
+        }
+        biggestColor = -1;
+        int biggestColorCount = 0;
+        for (int i = 1; i < colorCounts.length; i++) {
+            int countHere = colorCounts[i];
+            if (countHere > biggestColorCount) {
+                biggestColorCount = countHere;
+                biggestColor = i;
+            }
+        }
+        return biggestColor;
+    }
+    
+    private Board getOtherBoard() {
+        if (PLAYERONE)
+            return MyGame.right;
+        return MyGame.left;
     }
 
     private void updateGravity() {
@@ -106,6 +228,7 @@ public class Board {
         kLeftLast = kLeft;
         kRightLast = kRight;
         kShufLast = kShuf;
+        kSummonLast = kSummon;
         
         Input inp = gc.getInput();
         if (PLAYERONE) {
@@ -113,11 +236,13 @@ public class Board {
             kLeft = inp.isKeyDown(Input.KEY_LEFT);
             kRight = inp.isKeyDown(Input.KEY_RIGHT);
             kShuf = inp.isKeyDown(Input.KEY_Z);
+            kSummon = inp.isKeyDown(Input.KEY_A);
         } else {
             kDown = inp.isControllerDown(0);
             kLeft = inp.isControllerLeft(0);
             kRight = inp.isControllerRight(0);
             kShuf = inp.isButtonPressed(18, 0);
+            kSummon = inp.isButtonPressed(17, 0);
         }
     }
 
@@ -139,9 +264,8 @@ public class Board {
         
         if (!doesNeedGravity()) {
             updateFallingGemsPos();
+            collideFallingGems();
         }
-        
-        collideFallingGems();
     }
 
     private void updateFallingGemsPos() {
@@ -149,7 +273,7 @@ public class Board {
         float fallSpd = 0f;
         if (kDown) {
             fallSpd = 10f / 60f;
-        } else {
+        } else if (!MyGame.disableSecondPlayer) {
             fallSpd = 2f / 60f;
         }
         fallingGemY += fallSpd;
@@ -285,10 +409,14 @@ public class Board {
             int theY = gem[1];
             int theColor = getSpace(theY,theX);
             
+            if (summonColor == 0) //first hit, set summon color
+                summonColor = theColor;
+            
             SpecialEffects.addCrash(theX, theY, offsetx, offsety, theColor);
             
             setSpace(theY, theX, 0);
         }
+        kills += markedForDeath.size();
         markedForDeath.clear();
     }
 
@@ -320,8 +448,9 @@ public class Board {
     int offsetx = 0;
     int offsety = 0;
     
-    public void draw(Graphics g, int offsetx) throws SlickException {
+    public void draw(Graphics g, int offsetx, int offsety) throws SlickException {
         this.offsetx = offsetx;
+        this.offsety = offsety;
         
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
@@ -335,7 +464,9 @@ public class Board {
 
         drawFallingGems(g);
         
-        g.drawString("needsGravity: " + doesNeedGravity(), offsetx + 64, 64);
+        drawNextGems(g);
+        
+        g.drawString("summon color: " + summonColor + ", progress " + kills, offsetx + 64, 64);
     }
 
     private void drawFallingGems(Graphics g) {
@@ -350,32 +481,64 @@ public class Board {
             
             //first (from third)
             int color1 = fallingGems[0];
-            finalY = fallingGemY * 32;
-            float finalBottomY = (fallingGemY + 1 - ratio) * 32;
+            finalY = fallingGemY * 32 + offsety;
+            float finalBottomY = (fallingGemY + 1 - ratio) * 32 + offsety;
             g.drawImage(imageCol(color1),
-                    finalX, finalY, finalX + 32, finalBottomY,
+                    finalX, finalY,
+                    finalX + 32, finalBottomY,
                     0, 64*ratio, 64, 64);
             
             //second (from first)
             int color2 = fallingGems[1];
-            finalY = (fallingGemY + 1 - ratio) * 32;
-            g.drawImage(imageCol(color2), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
+            finalY = (fallingGemY + 1 - ratio) * 32 + offsety;
+            finalBottomY = finalY + 32;
+            g.drawImage(imageCol(color2),
+                    finalX, finalY,
+                    finalX + 32, finalBottomY,
+                    0, 0, 64, 64);
             
             //third (from second)
             int color3 = fallingGems[2];
-            finalY = (fallingGemY + 2 - ratio) * 32;
-            g.drawImage(imageCol(color3), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
+            finalY = (fallingGemY + 2 - ratio) * 32 + offsety;
+            finalBottomY = finalY + 32;
+            g.drawImage(imageCol(color3),
+                    finalX, finalY,
+                    finalX + 32, finalBottomY,
+                    0, 0, 64, 64);
             
             //fourth! (from third)
-            finalY = (fallingGemY + 3 - ratio) * 32;
-            g.drawImage(imageCol(color1), finalX, finalY, finalX + 32, (fallingGemY + 3) * 32,
+            finalY = (fallingGemY + 3 - ratio) * 32 + offsety;
+            finalBottomY = (fallingGemY + 3) * 32 + offsety;
+            g.drawImage(imageCol(color1),
+                    finalX, finalY,
+                    finalX + 32, finalBottomY,
                     0, 0, 64, ratio*64);
+        }
+    }
+    
+    private void drawNextGems(Graphics g){
+        int nextX;
+        int nextY = 55;
+        if (PLAYERONE) {
+            nextX = 310;
+        } else {
+            nextX = 458;
+        }
+        
+        int[] nextThree = peekNextThree();
+        
+        for (int i = 0; i < nextThree.length; i++) {
+            g.drawImage(imageCol(nextThree[i]),
+                    nextX, nextY + i * 32,
+                    nextX + 32, nextY + (i + 1) * 32,
+                    0, 0,
+                    64, 64);
         }
     }
 
     private void drawGem(Graphics g, int color, int x, float y) {
         int finalX = x * 32 + offsetx;
-        float finalY = y * 32;
+        float finalY = y * 32 + offsety;
         g.drawImage(imageCol(color), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
     }
 
@@ -412,7 +575,7 @@ public class Board {
     ArrayList<Integer> rngBuf;
     private int randomColor() {
         int newRand = useRngToMakeANewColor();
-        rngBuf.add(rng.nextInt(newRand));
+        rngBuf.add(newRand);
         return rngBuf.remove(0);
     }
 
@@ -436,5 +599,5 @@ public class Board {
     
     void setSpace(int y, int x, int col) {
         spaces[y][x] = col;
-    } 
+    }
 }
