@@ -8,6 +8,8 @@ import org.newdawn.slick.SlickException;
 public class SpecialEffects {
     static ArrayList<CrashFx> crash = new ArrayList<>();
     
+    static SummonFx currentSummon;
+    
     public static void addCrash(int x, int y, int offsetx, int offsety, int color) {
         CrashFx fx = new CrashFx();
         fx.x = x*32+offsetx;
@@ -19,6 +21,11 @@ public class SpecialEffects {
         crash.add(fx);
     }
     
+    public static void setSummon(int color) {
+        currentSummon = new SummonFx();
+        currentSummon.img = ContentContainer.summonFromColor(color).copy();
+    }
+    
     public static void update() {
         for (CrashFx c : crash) {
             c.x += c.vx;
@@ -28,12 +35,40 @@ public class SpecialEffects {
         }
         
         crash.removeIf((CrashFx t) -> t.y > MyGame.WINDOWH);
+        
+        if (currentSummon != null) {
+            currentSummon.summonTimer--;
+            if (currentSummon.summonTimer <= 0) {
+                currentSummon.scale += 0.02f;
+                currentSummon.img.setAlpha(currentSummon.img.getAlpha() - 0.04f);
+                if (currentSummon.scale >= currentSummon.MAXSCALE) {
+                    currentSummon = null;
+                }
+            }
+        }
     }
     
     public static void draw(Graphics g) throws SlickException {
         for (int i = 0; i < crash.size(); i++) {
             CrashFx c = crash.get(i);
             g.drawImage(c.img, c.x, c.y);
+        }
+        
+        if (currentSummon != null) {
+            Image img = currentSummon.img;
+            float scale = currentSummon.scale;
+            int targetX = MyGame.WINDOWW / 2;
+            int targetY = MyGame.WINDOWH / 2 + 100;
+            int imgW = img.getWidth();
+            int imgH = img.getHeight();
+            float finalX = targetX - (imgW/2) * scale;
+            float finalY = targetY - (imgH/2) * scale;
+            float finalW = imgW * scale;
+            float finalH = imgH * scale;
+            
+            g.drawImage(img,
+                    finalX, finalY, finalX+finalW, finalY+finalH,
+                    0, 0, imgW, imgH);
         }
     }
 }
@@ -44,4 +79,11 @@ class CrashFx {
     float vx;
     float vy;
     Image img;
+}
+
+class SummonFx {
+    Image img;
+    float scale = 0.3f;
+    final float MAXSCALE = 1f;
+    int summonTimer = 120;
 }

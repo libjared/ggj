@@ -123,6 +123,8 @@ public class Board {
                 getOtherBoard().doPurpleMagic();
                 break;
         }
+        
+        SpecialEffects.setSummon(summonColor);
     }
 
     private void doYellowMagic() {

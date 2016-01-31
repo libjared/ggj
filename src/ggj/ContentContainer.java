@@ -14,6 +14,11 @@ public class ContentContainer {
     private static Image purple;
     private static Image yellow;
     private static Image boardGui;
+    private static Image redS; 
+    private static Image blueS; 
+    private static Image greenS;
+    private static Image purpleS;
+    private static Image yellowS;
     
     public static void LoadAllContent() throws SlickException {
         red = new Image("content/red.png");
@@ -21,7 +26,14 @@ public class ContentContainer {
         green = new Image("content/green.png");
         purple = new Image("content/purple.png");
         yellow = new Image("content/yellow.png");
+        
         boardGui = new Image("content/board.png");
+        
+        redS = new Image("content/redRex.png");
+        blueS = new Image("content/blueCrab.png");
+        greenS = new Image("content/greenSentry.png");
+        purpleS = new Image("content/purplePuma.png");
+        yellowS = new Image("content/yellowAngel.png");
     }
     
     public static Image getRed(){
@@ -48,6 +60,29 @@ public class ContentContainer {
         return boardGui;
     }
 
+    static Image summonFromColor(int col) {
+        if (col == 0)
+            assert Boolean.TRUE;
+        
+        //_rgbyp
+        switch (col) {
+            case 0:
+                return null;
+            case 1:
+                return redS;
+            case 2:
+                return greenS;
+            case 3:
+                return blueS;
+            case 4:
+                return yellowS;
+            case 5:
+                return purpleS;
+            default:
+                return null;
+        }
+    }
+    
     static Image imageFromColor(int col) {
         if (col == 0)
             assert Boolean.TRUE;
@@ -57,15 +92,15 @@ public class ContentContainer {
             case 0:
                 return null;
             case 1:
-                return ContentContainer.getRed();
+                return getRed();
             case 2:
-                return ContentContainer.getGreen();
+                return getGreen();
             case 3:
-                return ContentContainer.getBlue();
+                return getBlue();
             case 4:
-                return ContentContainer.getYellow();
+                return getYellow();
             case 5:
-                return ContentContainer.getPurple();
+                return getPurple();
             default:
                 return null;
         }

@@ -33,11 +33,14 @@ public class MyGame extends BasicGame {
 
     @Override
     public void update(GameContainer gc, int i) throws SlickException {
+        Input theInput = gc.getInput();
+//        if (theInput.isKeyDown(Input.KEY_R)) {
+//            SpecialEffects.setSummon(4);
+//        }
         if (winner == null) {
             left.update(gc);
             right.update(gc);
         } else {
-            Input theInput = gc.getInput();
             if (theInput.isKeyDown(Input.KEY_ENTER))
                 gc.exit();
         }
