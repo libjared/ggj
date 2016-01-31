@@ -11,7 +11,7 @@ public class Program {
             AppGameContainer appgc;
             int w = 800;
             int h = 600;
-            appgc = new AppGameContainer(new MyGame("Simple Slick Game", w, h));
+            appgc = new AppGameContainer(new MyGame("Gem Monsters", w, h));
             appgc.setDisplayMode(w, h, false);
             appgc.setVSync(true);
             appgc.start();
