@@ -305,7 +305,7 @@ public class Board {
         if (kDown || (--hasteTimer) > 0) {
             fallSpd = 10f / 60f;
         } else if (!MyGame.disableAutoFall) {
-            fallSpd = 2f / 60f;
+            fallSpd = 5f / 60f;
         }
         fallingGemY += fallSpd;
         
