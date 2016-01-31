@@ -73,29 +73,35 @@ public class Board {
     }
 
     private void updateGravity() {
-        if (gravTimer <= 0) {
-            didGravity = false;
-            for (int x = 0; x < WIDTH; x++) {
-                if (fallColumn(x))
-                    didGravity = true;
-            }
-            
-            if (didGravity) {
-                gravTimer = GRAVTIMERMAX;
-            }
+        if (doesNeedGravity()) {
+            gravTimer++;
         } else {
-            gravTimer--;
+            gravTimer = 0;
+        }
+        
+        if (gravTimer >= GRAVTIMERMAX) {
+            gravTimer = 0;
+            applyGravity();
+        }
+    }
+
+    private void applyGravity() {
+        for (int x = 0; x < WIDTH; x++) {
+            fallColumn(x);
         }
     }
     
-    boolean didGravity = false;
     final int GRAVTIMERMAX = 15;
     int gravTimer = 0;
     
-    //private boolean doesNeedGravity()
-    //{
-        //for (int x = 0; x < )
-    //}
+    private boolean doesNeedGravity() {
+        for (int x = 0; x < WIDTH; x++) {
+            ArrayList<Integer> thisCol = columnToArrayList(x);
+            if (columnNeedsGravity(thisCol))
+                return true;
+        }
+        return false;
+    }
 
     private void updateInputs(GameContainer gc) {
         //last
@@ -133,7 +139,7 @@ public class Board {
             shuffleAnim = SHUFFLEANIMMAX;
         }
         
-        if (!didGravity) {
+        if (!doesNeedGravity()) {
             updateFallingGemsPos();
         }
         
@@ -214,24 +220,9 @@ public class Board {
     private boolean fallColumn(int x) {
         boolean didFall = false;
         
-        //convert column to arraylist
-        ArrayList<Integer> newCol = new ArrayList<>();
-        for (int y = HEIGHT - 1; y >= 0; y--) {
-            newCol.add(spaces[y][x]);
-        }
+        ArrayList<Integer> newCol = columnToArrayList(x);
         
-        //check if the column is settled already
-        boolean needGravity = false;
-        boolean hitANothing = false;
-        for (int i = 0; i < newCol.size(); i++) {
-            if (newCol.get(i) == 0) {
-                hitANothing = true;
-            } else if (hitANothing) {
-                //we've hit a space before, and the current gem exists above it
-                //so we have to apply gravity in this column
-                needGravity = true;
-            }
-        }
+        boolean needGravity = columnNeedsGravity(newCol);
         
         if (!needGravity) return false;
         
@@ -256,6 +247,31 @@ public class Board {
         }
         
         return didFall;
+    }
+
+    private ArrayList<Integer> columnToArrayList(int x) {
+        //convert column to arraylist
+        ArrayList<Integer> newCol = new ArrayList<>();
+        for (int y = HEIGHT - 1; y >= 0; y--) {
+            newCol.add(spaces[y][x]);
+        }
+        return newCol;
+    }
+
+    private boolean columnNeedsGravity(ArrayList<Integer> newCol) {
+        //check if the column is settled already
+        boolean needGravity = false;
+        boolean hitANothing = false;
+        for (int i = 0; i < newCol.size(); i++) {
+            if (newCol.get(i) == 0) {
+                hitANothing = true;
+            } else if (hitANothing) {
+                //we've hit a space before, and the current gem exists above it
+                //so we have to apply gravity in this column
+                needGravity = true;
+            }
+        }
+        return needGravity;
     }
     
     private void processMarkedForDeath() {
@@ -304,7 +320,7 @@ public class Board {
 
         drawFallingGems(g);
         
-        g.drawString("didGravity: " + didGravity, OFFSETX + 64, 64);
+        g.drawString("needsGravity: " + doesNeedGravity(), OFFSETX + 64, 64);
     }
 
     private void drawFallingGems(Graphics g) {
