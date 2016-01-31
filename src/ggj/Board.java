@@ -188,7 +188,7 @@ public class Board {
                     break;
                 }
 
-                int colorHere = spaces[newY][newX];
+                int colorHere = getSpace(newY, newX);
 
                 if (matchColor == -1 || matchColor == colorHere) {
                     matchColor = colorHere;
@@ -209,8 +209,13 @@ public class Board {
     }
 
     private void destroyGem(int x, int y) {
+        //check if already marked
+        for (int[] ded : markedForDeath) {
+            if (ded[0] == x && ded[1] == y)
+                return;
+        }
+        
         markedForDeath.add(new int[]{x, y});
-        Logger.getLogger("Board").log(Level.WARNING, "destroy() at x:{0},y:{1}, its color is {2}", new Object[]{x, y, spaces[y][x]});
     }
 
     /**
@@ -242,7 +247,7 @@ public class Board {
         //copy back to column
         for (int i = 0; i < HEIGHT; i++) {
             int destY = HEIGHT - i - 1;
-            spaces[destY][x] = newCol.get(i);
+            setSpace(destY,x, newCol.get(i));
         }
         
         return didFall;
@@ -252,7 +257,7 @@ public class Board {
         //convert column to arraylist
         ArrayList<Integer> newCol = new ArrayList<>();
         for (int y = HEIGHT - 1; y >= 0; y--) {
-            newCol.add(spaces[y][x]);
+            newCol.add(getSpace(y,x));
         }
         return newCol;
     }
@@ -278,14 +283,11 @@ public class Board {
             int[] gem = markedForDeath.get(i);
             int theX = gem[0];
             int theY = gem[1];
-            int theColor = spaces[theY][theX];
-            
-            Logger.getLogger("Board").log(Level.WARNING, "effect() at x:{0},y:{1}, its color is {2}",
-                    new Object[]{theX, theY, theColor});
+            int theColor = getSpace(theY,theX);
             
             SpecialEffects.addCrash(theX, theY, offsetx, offsety, theColor);
             
-            spaces[theY][theX] = 0;
+            setSpace(theY, theX, 0);
         }
         markedForDeath.clear();
     }
@@ -323,7 +325,7 @@ public class Board {
         
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                int color = spaces[y][x];
+                int color = getSpace(y, x);
                 if (color == 0) {
                     continue;
                 }
@@ -388,9 +390,9 @@ public class Board {
         boolean collideBottom = fallingGemY > HEIGHT;
 
         if (collideGem || collideBottom) {
-            spaces[hitY - 1][fallingGemX] = fallingGems[2];
-            spaces[hitY - 2][fallingGemX] = fallingGems[1];
-            spaces[hitY - 3][fallingGemX] = fallingGems[0];
+            setSpace(hitY - 1,fallingGemX,fallingGems[2]);
+            setSpace(hitY - 2,fallingGemX,fallingGems[1]);
+            setSpace(hitY - 3,fallingGemX,fallingGems[0]);
 
             generateFallingGems();
 
@@ -400,7 +402,7 @@ public class Board {
     }
 
     private boolean gemExistsAt(int x, int y) {
-        return spaces[y][x] != 0;
+        return getSpace(y, x) != 0;
     }
 
     private Image imageCol(int col) {
@@ -427,4 +429,12 @@ public class Board {
     public int[] peekNextThree() {
         return new int[] { rngBuf.get(0), rngBuf.get(1), rngBuf.get(2) };
     }
+    
+    int getSpace(int y, int x) {
+        return spaces[y][x];
+    }
+    
+    void setSpace(int y, int x, int col) {
+        spaces[y][x] = col;
+    } 
 }
