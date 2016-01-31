@@ -123,8 +123,8 @@ class CrashFx {
 
 class SummonFx {
     Image img;
-    float scale = 0.5f;
-    final float MAXSCALE = 1.3f;
+    float scale = 0.6f;
+    final float MAXSCALE = 1.8f;
     int summonTimer = 120;
     String ticker;
 }
