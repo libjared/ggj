@@ -420,12 +420,12 @@ public class Board {
     }
     
     private void ensureBuffer(int n) {
-        while (rngBuf.size() > n) {
+        while (rngBuf.size() < n) {
             rngBuf.add(useRngToMakeANewColor());
         }
     }
     
-    private int[] peekNextThree() {
+    public int[] peekNextThree() {
         return new int[] { rngBuf.get(0), rngBuf.get(1), rngBuf.get(2) };
     }
 }
