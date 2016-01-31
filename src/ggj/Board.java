@@ -447,7 +447,7 @@ public class Board {
     
     private void processMarkedForDeath() {
         if (markedForDeath.size() > 0)
-            ContentContainer.getCrash().play();
+            ContentContainer.getCrash().play(1f + (float)Math.random() * 0.3f, 1f);
         
         for (int i = 0; i < markedForDeath.size(); i++) {
             int[] gem = markedForDeath.get(i);
@@ -661,7 +661,7 @@ public class Board {
             if (isValid(hitX, hitY - 3))
                 setSpace(hitY - 3,fallingGemX,fallingGems[0]);
             
-            ContentContainer.getDink().play();
+            ContentContainer.getDink().play(1f + (float)Math.random() * 0.3f, 1f);
 
             generateFallingGems();
 
