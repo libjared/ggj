@@ -50,6 +50,7 @@ public class MyGame extends BasicGame {
         left.draw(g, 30, 30);
         right.draw(g, WINDOWW - Board.WIDTH*32 - 30, 30);
         SpecialEffects.draw(g);
+        
         if (winner != null)
             g.drawString("WINNER is player " + (winner == left ? "1" : "2" ) + "!", WINDOWW/2, WINDOWH-32);
     }

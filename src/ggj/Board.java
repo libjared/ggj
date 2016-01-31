@@ -2,6 +2,7 @@ package ggj;
 
 import java.util.ArrayList;
 import java.util.Random;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -28,6 +29,9 @@ public class Board {
     int summonColor = 0;
     
     public boolean PLAYERONE;
+    
+    int hasteTimer = 0;
+    final int HASTETIMERMAX = 7*60; //7s
 
     public Board(boolean playerOne) throws SlickException {
         PLAYERONE = playerOne;
@@ -79,7 +83,7 @@ public class Board {
     }
     
     private void checkForDeath() {
-        if (gemExistsAt(WIDTH/2, 0)) {
+        if (gemExistsAt(WIDTH/2, 0) && !doesNeedGravity()) {
             MyGame.winner = getOtherBoard();
         }
     }
@@ -98,10 +102,6 @@ public class Board {
     private void applySummon() {
         //012345
         //_rgbyp
-        if (true) {
-            doBlueMagic();
-            return;
-        }
         
         switch (summonColor) {
             case 0:
@@ -117,8 +117,41 @@ public class Board {
                 doBlueMagic();
                 break;
             case 4:
+                doYellowMagic();
+                break;
             case 5:
+                getOtherBoard().doPurpleMagic();
+                break;
         }
+    }
+
+    private void doYellowMagic() {
+        int averageHeight = (findHeight() + getOtherBoard().findHeight()) / 2;
+        remakeBoardWithHeight(averageHeight);
+        getOtherBoard().remakeBoardWithHeight(averageHeight);
+    }
+    
+    private void remakeBoardWithHeight(int h) {
+        for (int y = h; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                setSpace(y, x, randomColor());
+            }
+        }
+    }
+    
+    private int findHeight() {
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                if (gemExistsAt(x, y)) {
+                    return y;
+                }
+            }
+        }
+        return HEIGHT;
+    }
+    
+    private void doPurpleMagic() {
+        hasteTimer = HASTETIMERMAX;
     }
     
     private void doBlueMagic() {
@@ -264,7 +297,7 @@ public class Board {
     private void updateFallingGemsPos() {
         //update y
         float fallSpd = 0f;
-        if (kDown) {
+        if (kDown || (--hasteTimer) > 0) {
             fallSpd = 10f / 60f;
         } else if (!MyGame.disableAutoFall) {
             fallSpd = 2f / 60f;
@@ -445,6 +478,56 @@ public class Board {
         this.offsetx = offsetx;
         this.offsety = offsety;
         
+        drawBoardGems(g);
+
+        drawFallingGems(g);
+        
+        drawNextGems(g);
+        
+        drawSummonBars(g);
+    }
+
+    private void drawSummonBars(Graphics g) {
+        Color pushCol = g.getColor();
+        float pushLW = g.getLineWidth();
+        
+        g.setLineWidth(2f);
+        
+        //outline        
+        g.setColor(Color.blue);
+        g.drawRect(this.offsetx, HEIGHT*32 + 48f, WIDTH*32, 32);
+        
+        if (kills != 0) {
+            float ratio = kills / (float)KILLSTOSUMMON;
+            if (ratio >= 1f)
+                ratio = 1f;
+            g.setColor(colorFromInt(summonColor));
+            g.fillRect(this.offsetx, HEIGHT*32 + 48f, ratio*WIDTH*32, 32);
+        }
+        
+        g.setLineWidth(pushLW);
+        g.setColor(pushCol);
+    }
+
+    private static Color colorFromInt(int i) {
+        switch (i) {
+            case 0:
+            default:
+                return Color.white;
+            case 1:
+                return Color.red;
+            case 2:
+                return Color.green;
+            case 3:
+                return Color.cyan;
+            case 4:
+                return Color.yellow;
+            case 5:
+                return new Color(102, 51, 153); //purple
+        }
+    }
+
+    private void drawBoardGems(Graphics g) {
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 int color = getSpace(y, x);
@@ -454,12 +537,6 @@ public class Board {
                 drawGem(g, color, x, y);
             }
         }
-
-        drawFallingGems(g);
-        
-        drawNextGems(g);
-        
-        g.drawString("summon color: " + summonColor + ", progress " + kills, offsetx + 64, 64);
     }
 
     private void drawFallingGems(Graphics g) {
