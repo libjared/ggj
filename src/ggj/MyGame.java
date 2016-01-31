@@ -1,6 +1,7 @@
 package ggj;
 
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -53,7 +54,22 @@ public class MyGame extends BasicGame {
         right.draw(g, WINDOWW - Board.WIDTH*32 - 30, 30);
         SpecialEffects.draw(g);
         
-        if (winner != null)
-            g.drawString("WINNER is player " + (winner == left ? "1" : "2" ) + "!", WINDOWW/2, WINDOWH-32);
+        if (winner != null) {
+            String str = "PLAYER ";
+            if (winner == left)
+                str += "1";
+            else
+                str += "2";
+            str += " IS THE WINNER!";
+            
+            Font f = g.getFont();
+            int strW = f.getWidth(str);
+            int centerOnX = MyGame.WINDOWW / 2;
+            int centerOnY = MyGame.WINDOWH - 30;
+            int finalX = centerOnX - strW / 2;
+            int finalY = centerOnY;
+            f.drawString(finalX, finalY, str);
+        }
+            
     }
 }
