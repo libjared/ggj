@@ -59,12 +59,14 @@ public class Board {
     private boolean kRightLast;
     private boolean kShufLast;
     private boolean kSummonLast;
+    private boolean kDrainLast;
     
     private boolean kDown;
     private boolean kLeft;
     private boolean kRight;
     private boolean kShuf;
     private boolean kSummon;
+    private boolean kDrain;
     
     public void update(GameContainer gc) {
         updateInputs(gc);
@@ -95,6 +97,12 @@ public class Board {
             applySummon();
             
             //then reset
+            kills = 0;
+            summonColor = 0;
+        }
+        
+        //if you want your summon meter reset
+        if (kills > 0 && kDrain && !kDrainLast) {
             kills = 0;
             summonColor = 0;
         }
@@ -260,6 +268,7 @@ public class Board {
         kRightLast = kRight;
         kShufLast = kShuf;
         kSummonLast = kSummon;
+        kDrainLast = kDrain;
         
         Input inp = gc.getInput();
         if (PLAYERONE) {
@@ -268,12 +277,14 @@ public class Board {
             kRight = inp.isKeyDown(Input.KEY_RIGHT);
             kShuf = inp.isKeyDown(Input.KEY_Z);
             kSummon = inp.isKeyDown(Input.KEY_A);
+            kDrain = inp.isKeyDown(Input.KEY_S);
         } else {
             kDown = inp.isControllerDown(0);
             kLeft = inp.isControllerLeft(0);
             kRight = inp.isControllerRight(0);
             kShuf = inp.isButtonPressed(18, 0);
             kSummon = inp.isButtonPressed(17, 0);
+            kDrain = inp.isButtonPressed(16, 0);
         }
     }
 
