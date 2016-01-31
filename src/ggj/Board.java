@@ -2,14 +2,11 @@ package ggj;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Board {
 
@@ -30,7 +27,7 @@ public class Board {
     int kills = 0;
     int summonColor = 0;
     
-    boolean PLAYERONE;
+    public boolean PLAYERONE;
 
     public Board(boolean playerOne) throws SlickException {
         PLAYERONE = playerOne;
@@ -76,8 +73,16 @@ public class Board {
         
         updateGravity();
         
+        checkForDeath();
+        
         updateSummon();
-    } 
+    }
+    
+    private void checkForDeath() {
+        if (gemExistsAt(WIDTH/2, 0)) {
+            MyGame.winner = getOtherBoard();
+        }
+    }
 
     private void updateSummon() {
         if (kills >= KILLSTOSUMMON && kSummon && !kSummonLast) {
@@ -131,18 +136,6 @@ public class Board {
             }
         }
     }
-
-//    private int[][] cloneSpaces() {
-//        int[][] myInt = new int[spaces.length][];
-//        for(int i = 0; i < spaces.length; i++)
-//        {
-//            int[] aMatrix = spaces[i];
-//            int   aLength = aMatrix.length;
-//            myInt[i] = new int[aLength];
-//            System.arraycopy(aMatrix, 0, myInt[i], 0, aLength);
-//        }
-//        return myInt;
-//    }
     
     private void doGreenMagic() {
         //color snipe
@@ -273,7 +266,7 @@ public class Board {
         float fallSpd = 0f;
         if (kDown) {
             fallSpd = 10f / 60f;
-        } else if (!MyGame.disableSecondPlayer) {
+        } else if (!MyGame.disableAutoFall) {
             fallSpd = 2f / 60f;
         }
         fallingGemY += fallSpd;
@@ -553,9 +546,12 @@ public class Board {
         boolean collideBottom = fallingGemY > HEIGHT;
 
         if (collideGem || collideBottom) {
-            setSpace(hitY - 1,fallingGemX,fallingGems[2]);
-            setSpace(hitY - 2,fallingGemX,fallingGems[1]);
-            setSpace(hitY - 3,fallingGemX,fallingGems[0]);
+            if (isValid(hitX, hitY - 1))
+                setSpace(hitY - 1,fallingGemX,fallingGems[2]);
+            if (isValid(hitX, hitY - 2))
+                setSpace(hitY - 2,fallingGemX,fallingGems[1]);
+            if (isValid(hitX, hitY - 3))
+                setSpace(hitY - 3,fallingGemX,fallingGems[0]);
 
             generateFallingGems();
 
