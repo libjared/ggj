@@ -105,6 +105,7 @@ public class Board {
         if (kills > 0 && kDrain && !kDrainLast) {
             kills = 0;
             summonColor = 0;
+            ContentContainer.getVanish().play();
         }
     }
     

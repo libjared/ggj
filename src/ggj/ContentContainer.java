@@ -24,6 +24,7 @@ public class ContentContainer {
     private static Sound crash;
     private static Sound dink;
     private static Sound gong;
+    private static Sound vanish;
     private static Sound sRed; 
     private static Sound sBlue; 
     private static Sound sGreen;
@@ -48,6 +49,7 @@ public class ContentContainer {
         crash = new Sound("content/snd/crash.ogg");
         dink = new Sound("content/snd/dink.ogg");
         gong = new Sound("content/snd/gong.ogg");
+        vanish = new Sound("content/snd/vanish.ogg");
         sRed = new Sound("content/snd/sred.ogg");
         sGreen = new Sound("content/snd/sgreen.ogg");
         sBlue = new Sound("content/snd/sblue.ogg");
@@ -148,6 +150,10 @@ public class ContentContainer {
         }
     }
 
+    static Sound getVanish() {
+        return vanish;
+    }
+    
     static Sound getGong() {
         return gong;
     }
