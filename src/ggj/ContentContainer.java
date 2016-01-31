@@ -2,6 +2,7 @@ package ggj;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Shape;
 
 /**
  *
@@ -13,6 +14,7 @@ public class ContentContainer {
     private static Image green;
     private static Image purple;
     private static Image yellow;
+    private static Image boardGui;
     
     public static void LoadAllContent() throws SlickException {
         red = new Image("content/red.png");
@@ -20,6 +22,7 @@ public class ContentContainer {
         green = new Image("content/green.png");
         purple = new Image("content/purple.png");
         yellow = new Image("content/yellow.png");
+        boardGui = new Image("content/board.png");
     }
     
     public static Image getRed(){
@@ -40,5 +43,29 @@ public class ContentContainer {
     
     public static Image getYellow(){
         return yellow;
+    }
+
+    public static Image getBoardGui() {
+        return boardGui;
+    }
+
+    static Image imageFromColor(int col) {
+        //_rgbyp
+        switch (col) {
+            case 0:
+                return null;
+            case 1:
+                return ContentContainer.getRed();
+            case 2:
+                return ContentContainer.getGreen();
+            case 3:
+                return ContentContainer.getBlue();
+            case 4:
+                return ContentContainer.getYellow();
+            case 5:
+                return ContentContainer.getPurple();
+            default:
+                return null;
+        }
     }
 }

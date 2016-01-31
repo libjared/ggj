@@ -2,6 +2,8 @@ package ggj;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -12,7 +14,6 @@ public class Board {
 
     public static final int WIDTH = 8;
     public static final int HEIGHT = 16;
-    public final int OFFSETX;
     Random rng = new Random();
 
     //none,R,G,B,Y,P is 0 to 5
@@ -26,8 +27,7 @@ public class Board {
     
     boolean PLAYERONE;
 
-    public Board(int offsetx, boolean playerOne) throws SlickException {
-        OFFSETX = offsetx;
+    public Board(boolean playerOne) throws SlickException {
         PLAYERONE = playerOne;
         
         this.markedForDeath = new ArrayList<>();
@@ -210,6 +210,7 @@ public class Board {
 
     private void destroyGem(int x, int y) {
         markedForDeath.add(new int[]{x, y});
+        Logger.getLogger("Board").log(Level.WARNING, "destroy() at x:{0},y:{1}, its color is {2}", new Object[]{x, y, spaces[y][x]});
     }
 
     /**
@@ -275,7 +276,16 @@ public class Board {
     private void processMarkedForDeath() {
         for (int i = 0; i < markedForDeath.size(); i++) {
             int[] gem = markedForDeath.get(i);
-            spaces[gem[1]][gem[0]] = 0;
+            int theX = gem[0];
+            int theY = gem[1];
+            int theColor = spaces[theY][theX];
+            
+            Logger.getLogger("Board").log(Level.WARNING, "effect() at x:{0},y:{1}, its color is {2}",
+                    new Object[]{theX, theY, theColor});
+            
+            SpecialEffects.addCrash(theX, theY, offsetx, offsety, theColor);
+            
+            spaces[theY][theX] = 0;
         }
         markedForDeath.clear();
     }
@@ -305,7 +315,12 @@ public class Board {
         return x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT;
     }
 
-    public void draw(Graphics g) throws SlickException {
+    int offsetx = 0;
+    int offsety = 0;
+    
+    public void draw(Graphics g, int offsetx) throws SlickException {
+        this.offsetx = offsetx;
+        
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 int color = spaces[y][x];
@@ -318,7 +333,7 @@ public class Board {
 
         drawFallingGems(g);
         
-        g.drawString("needsGravity: " + doesNeedGravity(), OFFSETX + 64, 64);
+        g.drawString("needsGravity: " + doesNeedGravity(), offsetx + 64, 64);
     }
 
     private void drawFallingGems(Graphics g) {
@@ -328,7 +343,7 @@ public class Board {
             drawGem(g, fallingGems[2], fallingGemX, fallingGemY + 2);
         } else {
             float ratio = shuffleAnim / (float)SHUFFLEANIMMAX;
-            int finalX = fallingGemX * 32 + OFFSETX;
+            int finalX = fallingGemX * 32 + offsetx;
             float finalY;
             
             //first (from third)
@@ -357,7 +372,7 @@ public class Board {
     }
 
     private void drawGem(Graphics g, int color, int x, float y) {
-        int finalX = x * 32 + OFFSETX;
+        int finalX = x * 32 + offsetx;
         float finalY = y * 32;
         g.drawImage(imageCol(color), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
     }
@@ -389,23 +404,7 @@ public class Board {
     }
 
     private Image imageCol(int col) {
-        //_rgbyp
-        switch (col) {
-            case 0:
-                return null;
-            case 1:
-                return ContentContainer.getRed();
-            case 2:
-                return ContentContainer.getGreen();
-            case 3:
-                return ContentContainer.getBlue();
-            case 4:
-                return ContentContainer.getYellow();
-            case 5:
-                return ContentContainer.getPurple();
-            default:
-                return null;
-        }
+        return ContentContainer.imageFromColor(col);
     }
     
     ArrayList<Integer> rngBuf;

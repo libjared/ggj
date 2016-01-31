@@ -3,7 +3,6 @@ package ggj;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class MyGame extends BasicGame {
@@ -22,8 +21,8 @@ public class MyGame extends BasicGame {
 
     @Override
     public void init(GameContainer gc) throws SlickException {
-        left = new Board(0, true);
-        right = new Board(WINDOWW - Board.WIDTH*32, false);
+        left = new Board(true);
+        right = new Board(false);
         gc.getInput().initControllers();
         
         ContentContainer.LoadAllContent();
@@ -33,12 +32,14 @@ public class MyGame extends BasicGame {
     public void update(GameContainer gc, int i) throws SlickException {
         left.update(gc);
         right.update(gc);
+        SpecialEffects.update();
     }
 
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
-        Input inp = gc.getInput();
-        left.draw(g);
-        right.draw(g);
+        g.drawImage(ContentContainer.getBoardGui(), 0f, 0f);
+        left.draw(g, 32);
+        right.draw(g, WINDOWW - Board.WIDTH*32 - 32);
+        SpecialEffects.draw(g);
     }
 }
