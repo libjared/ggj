@@ -1,7 +1,6 @@
 package ggj;
 
 import java.util.ArrayList;
-import java.util.Random;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -21,15 +20,14 @@ public class SpecialEffects {
     }
     
     public static void update() {
-        for (int i = 0; i < crash.size(); i++) {
-            CrashFx c = crash.get(i);
+        for (CrashFx c : crash) {
             c.x += c.vx;
             c.y += c.vy;
             
             c.vy += 1;
         }
         
-        //TODO: kill old crashfxs
+        crash.removeIf((CrashFx t) -> t.y > MyGame.WINDOWH);
     }
     
     public static void draw(Graphics g) throws SlickException {

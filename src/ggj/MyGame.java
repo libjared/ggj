@@ -13,8 +13,8 @@ public class MyGame extends BasicGame {
     static boolean disableAutoFall = false;
     static Board winner;
     
-    int WINDOWW;
-    int WINDOWH;
+    static int WINDOWW;
+    static int WINDOWH;
 
     public MyGame(String gamename, int windowW, int windowH) throws SlickException {
         super(gamename);
