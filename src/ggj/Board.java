@@ -24,7 +24,7 @@ public class Board {
 
     ArrayList<int[]> markedForDeath;
     
-    final int KILLSTOSUMMON = 20;
+    final int KILLSTOSUMMON = 6;
     int kills = 0;
     int summonColor = 0;
     
@@ -85,6 +85,7 @@ public class Board {
     private void checkForDeath() {
         if (gemExistsAt(WIDTH/2, 0) && !doesNeedGravity()) {
             MyGame.winner = getOtherBoard();
+            ContentContainer.getGong().play();
         }
     }
 
@@ -102,6 +103,8 @@ public class Board {
     private void applySummon() {
         //012345
         //_rgbyp
+        
+        ContentContainer.summonSoundFromColor(summonColor).play();
         
         switch (summonColor) {
             case 0:
@@ -431,6 +434,9 @@ public class Board {
     }
     
     private void processMarkedForDeath() {
+        if (markedForDeath.size() > 0)
+            ContentContainer.getCrash().play();
+        
         for (int i = 0; i < markedForDeath.size(); i++) {
             int[] gem = markedForDeath.get(i);
             int theX = gem[0];
@@ -499,11 +505,16 @@ public class Board {
         g.setColor(Color.blue);
         g.drawRect(this.offsetx, HEIGHT*32 + 48f, WIDTH*32, 32);
         
+        float colScalar = 1f;
+        
         if (kills != 0) {
             float ratio = kills / (float)KILLSTOSUMMON;
-            if (ratio >= 1f)
+            if (ratio >= 1f) {
                 ratio = 1f;
-            g.setColor(colorFromInt(summonColor));
+                colScalar = (float) (Math.random() * 0.5f) + 1f;
+            }
+            Color newCol = colorFromInt(summonColor).scaleCopy(colScalar);
+            g.setColor(newCol);
             g.fillRect(this.offsetx, HEIGHT*32 + 48f, ratio*WIDTH*32, 32);
         }
         
@@ -631,6 +642,8 @@ public class Board {
                 setSpace(hitY - 2,fallingGemX,fallingGems[1]);
             if (isValid(hitX, hitY - 3))
                 setSpace(hitY - 3,fallingGemX,fallingGems[0]);
+            
+            ContentContainer.getDink().play();
 
             generateFallingGems();
 

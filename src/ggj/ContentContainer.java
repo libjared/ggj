@@ -2,6 +2,7 @@ package ggj;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 
 /**
  *
@@ -20,6 +21,15 @@ public class ContentContainer {
     private static Image purpleS;
     private static Image yellowS;
     
+    private static Sound crash;
+    private static Sound dink;
+    private static Sound gong;
+    private static Sound sRed; 
+    private static Sound sBlue; 
+    private static Sound sGreen;
+    private static Sound sPurple;
+    private static Sound sYellow;
+    
     public static void LoadAllContent() throws SlickException {
         red = new Image("content/red.png");
         blue = new Image("content/blue.png");
@@ -34,6 +44,15 @@ public class ContentContainer {
         greenS = new Image("content/greenSentry.png");
         purpleS = new Image("content/purplePuma.png");
         yellowS = new Image("content/yellowAngel.png");
+        
+        crash = new Sound("content/snd/crash.ogg");
+        dink = new Sound("content/snd/dink.ogg");
+        gong = new Sound("content/snd/gong.ogg");
+        sRed = new Sound("content/snd/sred.ogg");
+        sGreen = new Sound("content/snd/sgreen.ogg");
+        sBlue = new Sound("content/snd/sblue.ogg");
+        sYellow = new Sound("content/snd/syellow.ogg");
+        sPurple = new Sound("content/snd/spurple.ogg");
     }
     
     public static Image getRed(){
@@ -58,6 +77,29 @@ public class ContentContainer {
 
     public static Image getBoardGui() {
         return boardGui;
+    }
+    
+    static Sound summonSoundFromColor(int col) {
+        if (col == 0)
+            assert Boolean.TRUE;
+        
+        //_rgbyp
+        switch (col) {
+            case 0:
+                return null;
+            case 1:
+                return sRed;
+            case 2:
+                return sGreen;
+            case 3:
+                return sBlue;
+            case 4:
+                return sYellow;
+            case 5:
+                return sPurple;
+            default:
+                return null;
+        }
     }
 
     static Image summonFromColor(int col) {
@@ -104,5 +146,17 @@ public class ContentContainer {
             default:
                 return null;
         }
+    }
+
+    static Sound getGong() {
+        return gong;
+    }
+    
+    static Sound getCrash() {
+        return crash;
+    }
+    
+    static Sound getDink() {
+        return dink;
     }
 }

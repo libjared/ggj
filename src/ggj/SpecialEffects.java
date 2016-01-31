@@ -89,7 +89,7 @@ public class SpecialEffects {
             int centerOnY = MyGame.WINDOWH / 2 - 40;
             int finalX = centerOnX - strW / 2;
             int finalY = centerOnY;
-            g.drawString(str, finalX, finalY);
+            f.drawString(finalX, finalY, str);
         }
     }
     
