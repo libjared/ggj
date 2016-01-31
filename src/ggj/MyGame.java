@@ -38,10 +38,6 @@ public class MyGame extends BasicGame {
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         Input inp = gc.getInput();
-        if (inp.isKeyDown(Input.KEY_DOWN))
-        {
-            g.drawString("Hello!", 50, 50);
-        }
         left.draw(g);
         right.draw(g);
     }
