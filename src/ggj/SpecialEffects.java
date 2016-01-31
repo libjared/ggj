@@ -1,6 +1,7 @@
 package ggj;
 
 import java.util.ArrayList;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -24,6 +25,25 @@ public class SpecialEffects {
     public static void setSummon(int color) {
         currentSummon = new SummonFx();
         currentSummon.img = ContentContainer.summonFromColor(color).copy();
+        currentSummon.ticker = tickerFromColor(color);
+    }
+    
+    public static String tickerFromColor(int col) {
+        switch (col) {
+            case 0:
+            default:
+                return "AN ACCIDENT...";
+            case 1:
+                return "PYROCLASTIC ROAR";
+            case 2:
+                return "WIND SLASH";
+            case 3:
+                return "TIDAL CRASH";
+            case 4:
+                return "JUSTICE'S LIGHT";
+            case 5:
+                return "GRIM GRAVITY";
+        }
     }
     
     public static void update() {
@@ -54,6 +74,26 @@ public class SpecialEffects {
             g.drawImage(c.img, c.x, c.y);
         }
         
+        drawSummonText(g);
+        
+        drawSummon(g);
+    }
+
+    private static void drawSummonText(Graphics g) {
+        if (currentSummon != null) {
+            Font f = g.getFont();
+            String str = currentSummon.ticker;
+
+            int strW = f.getWidth(str);
+            int centerOnX = MyGame.WINDOWW / 2;
+            int centerOnY = MyGame.WINDOWH / 2 - 40;
+            int finalX = centerOnX - strW / 2;
+            int finalY = centerOnY;
+            g.drawString(str, finalX, finalY);
+        }
+    }
+    
+    private static void drawSummon(Graphics g) {
         if (currentSummon != null) {
             Image img = currentSummon.img;
             float scale = currentSummon.scale;
@@ -86,4 +126,5 @@ class SummonFx {
     float scale = 0.3f;
     final float MAXSCALE = 1f;
     int summonTimer = 120;
+    String ticker;
 }
