@@ -511,9 +511,13 @@ public class Board {
             float ratio = kills / (float)KILLSTOSUMMON;
             if (ratio >= 1f) {
                 ratio = 1f;
-                colScalar = (float) (Math.random() * 0.5f) + 1f;
+                wooshyWooshColorThing += 0.1f;
+                colScalar = (float) (Math.cos(wooshyWooshColorThing)+1)/2;
+            } else {
+                wooshyWooshColorThing = 0f;
             }
             Color newCol = colorFromInt(summonColor).scaleCopy(colScalar);
+            newCol.a = 1f;
             g.setColor(newCol);
             g.fillRect(this.offsetx, HEIGHT*32 + 48f, ratio*WIDTH*32, 32);
         }
@@ -521,6 +525,8 @@ public class Board {
         g.setLineWidth(pushLW);
         g.setColor(pushCol);
     }
+    
+    private float wooshyWooshColorThing = 0f;
 
     private static Color colorFromInt(int i) {
         switch (i) {
