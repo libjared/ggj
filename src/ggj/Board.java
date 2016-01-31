@@ -24,7 +24,7 @@ public class Board {
 
     ArrayList<int[]> markedForDeath;
     
-    final int KILLSTOSUMMON = 6;
+    final int KILLSTOSUMMON = 20;
     int kills = 0;
     int summonColor = 0;
     
