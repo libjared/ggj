@@ -34,10 +34,20 @@ public class MyGame extends BasicGame {
         gc.setShowFPS(false);
     }
 
+    boolean kPause;
+    boolean kPauseLast;
+    boolean isPausing;
+    
     @Override
     public void update(GameContainer gc, int i) throws SlickException {
         Input theInput = gc.getInput();
-        if (winner == null) {
+        
+        kPauseLast = kPause;
+        kPause = theInput.isKeyDown(Input.KEY_P);
+        if (kPause && !kPauseLast)
+            isPausing = !isPausing;
+        
+        if (winner == null && !isPausing) {
             left.update(gc);
             right.update(gc);
         } else {
