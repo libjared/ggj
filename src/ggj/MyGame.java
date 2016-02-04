@@ -28,6 +28,7 @@ public class MyGame extends BasicGame {
         left = new Board(true);
         right = new Board(false);
         gc.getInput().initControllers();
+        Controls.start(gc);
         
         ContentContainer.LoadAllContent();
         

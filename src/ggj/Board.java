@@ -280,12 +280,12 @@ public class Board {
             kSummon = inp.isKeyDown(Input.KEY_A);
             kDrain = inp.isKeyDown(Input.KEY_S);
         } else {
-            kDown = inp.isControllerDown(0);
-            kLeft = inp.isControllerLeft(0);
-            kRight = inp.isControllerRight(0);
-            kShuf = inp.isButtonPressed(18, 0);
-            kSummon = inp.isButtonPressed(17, 0);
-            kDrain = inp.isButtonPressed(16, 0);
+            kDown = Controls.getDown();
+            kLeft = Controls.getLeft();
+            kRight = Controls.getRight();
+            kShuf = Controls.getShuf();
+            kSummon = Controls.getSummon();
+            kDrain = Controls.getDrain();
         }
     }
 
