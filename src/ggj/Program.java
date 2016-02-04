@@ -1,6 +1,5 @@
 package ggj;
 
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.AppGameContainer;
@@ -8,8 +7,7 @@ import org.newdawn.slick.SlickException;
 
 public class Program {
     public static void main(String[] args) {
-        //helps with locating openAL
-        System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
+        JavaBoilerplate.setupLibrarySupport();
 
         try {
             AppGameContainer appgc;
