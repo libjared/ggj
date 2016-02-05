@@ -13,7 +13,7 @@ class Controls {
     static Input gcInput;
     
     final private static int SNES_B = 2; //18 on mac
-    final private static int SNES_A = 1; //17 on mac
+    final private static int SNES_A = 1; //19 on mac
     final private static int SNES_X = 0; //16 on mac
     
     final private static int CONTROLLERBUTTONSHUFFLE = SNES_B;
