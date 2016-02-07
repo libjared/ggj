@@ -54,7 +54,7 @@ public class SpecialEffects {
             c.vy += 1;
         }
         
-        crash.removeIf((CrashFx t) -> t.y > MyGame.WINDOWH);
+        crash.removeIf((CrashFx t) -> t.y > MyGame.INTERNALH);
         
         if (currentSummon != null) {
             currentSummon.summonTimer--;
@@ -85,8 +85,8 @@ public class SpecialEffects {
             String str = currentSummon.ticker;
 
             int strW = f.getWidth(str);
-            int centerOnX = MyGame.WINDOWW / 2;
-            int centerOnY = MyGame.WINDOWH / 2 - 40;
+            int centerOnX = MyGame.INTERNALW / 2;
+            int centerOnY = MyGame.INTERNALH / 2 - 40;
             int finalX = centerOnX - strW / 2;
             int finalY = centerOnY;
             f.drawString(finalX, finalY, str);
@@ -97,8 +97,8 @@ public class SpecialEffects {
         if (currentSummon != null) {
             Image img = currentSummon.img;
             float scale = currentSummon.scale;
-            int targetX = MyGame.WINDOWW / 2;
-            int targetY = MyGame.WINDOWH / 2 + 100;
+            int targetX = MyGame.INTERNALW / 2;
+            int targetY = MyGame.INTERNALH / 2 + 100;
             int imgW = img.getWidth();
             int imgH = img.getHeight();
             float finalX = targetX - (imgW/2) * scale;

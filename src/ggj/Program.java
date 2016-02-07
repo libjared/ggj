@@ -11,10 +11,14 @@ public class Program {
 
         try {
             AppGameContainer appgc;
-            int w = 800;
-            int h = 600;
-            appgc = new AppGameContainer(new MyGame("Gem Monsters", w, h));
-            appgc.setDisplayMode(w, h, false);
+            int internalw = 800;
+            int internalh = 600;
+            int realwindoww = 1280;
+            int realwindowh = 960;
+            
+            MyGame mg = new MyGame("Gem Monsters", internalw, internalh, realwindoww, realwindowh);
+            appgc = new AppGameContainer(mg);
+            appgc.setDisplayMode(realwindoww, realwindowh, false);
             appgc.setVSync(true);
             appgc.start();
         } catch (SlickException ex) {
