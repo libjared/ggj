@@ -255,17 +255,16 @@ public class Board {
     }
 
     private void doRedMagic() {
-        //spawn junk on the top row
+        //spawn junk on the top rows
         redCall++;
-        int redLevels = 0;
+        int redRows = 1;
         if (redCall > 4) {
-            redLevels = 1;
+            redRows = 2;
             if (redCall > 8) {
-                redLevels = 2;
+                redRows = 3;
             }
         }
-        for (int i = 0; i < redLevels; i++) {
-            //the orginal code is here.
+        for (int i = 0; i < redRows; i++) {
             for (int x = 0; x < WIDTH; x++) {
                 setSpace(i, x, randomColor());
             }
