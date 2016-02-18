@@ -187,27 +187,27 @@ public class Board {
 
         boolean duplicatesCheck = true;
 
-        int diagonalS1 = rng.nextInt(9) + 1;
-        int diagonalS2 = rng.nextInt(9) + 1;
-        int diagonalS3 = rng.nextInt(9) + 1;
+        int diagonalS1 = getBlueRandomRange();
+        int diagonalS2 = getBlueRandomRange();
+        int diagonalS3 = getBlueRandomRange();
 
         do {
             if (diagonalS1 == diagonalS2) {
-                diagonalS2 = rng.nextInt(9) + 1;
+                diagonalS2 = getBlueRandomRange();
                 continue;
             }
             if (diagonalS2 == diagonalS3) {
-                diagonalS3 = rng.nextInt(9) + 1;
+                diagonalS3 = getBlueRandomRange();
                 continue;
             }
             if (diagonalS3 == diagonalS1) {
-                diagonalS1 = rng.nextInt(9) + 1;
+                diagonalS1 = getBlueRandomRange();
                 continue;
             }
             duplicatesCheck = false;
         } while (duplicatesCheck);
 
-        for (int i = 8; i > 0; i--) {
+        for (int i = 0; i < WIDTH; i++) {
             destroyGem(i, diagonalS1);
             destroyGem(i, diagonalS2);
             destroyGem(i, diagonalS3);
@@ -218,28 +218,34 @@ public class Board {
         }
     }
 
+    private int getBlueRandomRange() {
+        int max = 15;
+        int min = 7;
+        return rng.nextInt(max - min + 1) + min;
+    }
+
     private void doGreenMagic() {
         //color snipe
         //X Attack 
         int xn = rng.nextInt(10);
         boolean XAttack = false;
-        
-        if(xn == 1){
+
+        if (xn == 1) {
             XAttack = true;
         }
-        
+
         int biggestColor = getBiggestColor();
 
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 int colorHere = getSpace(y, x);
                 if (colorHere == biggestColor) {
-                    if(XAttack){
+                    if (XAttack) {
                         destroyGem(x, y);
-                        destroyGem(x-1, y-1);
-                        destroyGem(x-1, y+1);
-                        destroyGem(x+1, y-1);
-                        destroyGem(x+1, y+1);
+                        destroyGem(x - 1, y - 1);
+                        destroyGem(x - 1, y + 1);
+                        destroyGem(x + 1, y - 1);
+                        destroyGem(x + 1, y + 1);
                         continue;
                     }
                     destroyGem(x, y);
@@ -440,6 +446,17 @@ public class Board {
     }
 
     private void destroyGem(int x, int y) {
+        //check if in bounds
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
+            System.out.format("(x:%d, y:%d) is shit%n", x, y);
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        //check if empty
+        if (getSpace(y, x) == 0) {
+            return;
+        }
+
         //check if already marked
         for (int[] ded : markedForDeath) {
             if (ded[0] == x && ded[1] == y) {
