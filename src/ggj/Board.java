@@ -443,7 +443,7 @@ public class Board {
         //check if in bounds
         if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
             System.out.format("(x:%d, y:%d) is shit%n", x, y);
-            throw new ArrayIndexOutOfBoundsException();
+            return;
         }
 
         //check if empty
