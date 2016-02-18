@@ -220,15 +220,29 @@ public class Board {
 
     private void doGreenMagic() {
         //color snipe
-        //cross Atack in progress
-        int crossAttack = rng.nextInt(10);
+        //X Attack 
+        int xn = rng.nextInt(10);
+        boolean XAttack = false;
+        
+        if(xn == 1){
+            XAttack = true;
+        }
+        
         int biggestColor = getBiggestColor();
 
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 int colorHere = getSpace(y, x);
                 if (colorHere == biggestColor) {
-                    markedForDeath.add(new int[]{x, y});
+                    if(XAttack){
+                        destroyGem(x, y);
+                        destroyGem(x-1, y-1);
+                        destroyGem(x-1, y+1);
+                        destroyGem(x+1, y-1);
+                        destroyGem(x+1, y+1);
+                        continue;
+                    }
+                    destroyGem(x, y);
                 }
             }
         }
