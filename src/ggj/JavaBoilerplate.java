@@ -6,8 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class JavaBoilerplate {
-    public static void setupLibrarySupport()
-    {
+
+    public static void setupLibrarySupport() {
         javaLibraryPath();
         lwjglPath();
     }

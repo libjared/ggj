@@ -15,10 +15,10 @@ public class MyGame extends BasicGame {
     static Board right;
     static boolean disableAutoFall = false;
     static Board winner;
-    
+
     static int INTERNALW;
     static int INTERNALH;
-    
+
     static int WINDOWW;
     static int WINDOWH;
 
@@ -33,41 +33,41 @@ public class MyGame extends BasicGame {
 
     Image img;
     FBOGraphics fbo;
-    
+
     @Override
     public void init(GameContainer gc) throws SlickException {
         img = new Image(INTERNALW, INTERNALH);
         fbo = new FBOGraphics(img);
-        
+
         left = new Board(true);
         right = new Board(false);
         gc.getInput().initControllers();
         Controls.start(gc);
-        
+
         ContentContainer.LoadAllContent();
-        
+
         gc.setShowFPS(false);
     }
 
     boolean kPause;
     boolean kPauseLast;
     boolean isPausing;
-    
+
     @Override
     public void update(GameContainer gc, int i) throws SlickException {
         Input theInput = gc.getInput();
-        
+
         kPauseLast = kPause;
         kPause = theInput.isKeyDown(Input.KEY_P);
-        if (kPause && !kPauseLast)
+        if (kPause && !kPauseLast) {
             isPausing = !isPausing;
-        
+        }
+
         if (winner == null && !isPausing) {
             left.update(gc);
             right.update(gc);
-        } else {
-            if (theInput.isKeyDown(Input.KEY_ENTER))
-                gc.exit();
+        } else if (theInput.isKeyDown(Input.KEY_ENTER)) {
+            gc.exit();
         }
         SpecialEffects.update();
     }
@@ -81,17 +81,18 @@ public class MyGame extends BasicGame {
     private void drawWithGraphics(Graphics g) throws SlickException {
         g.drawImage(ContentContainer.getBoardGui(), 0f, 0f);
         left.draw(g, 30, 30);
-        right.draw(g, INTERNALW - Board.WIDTH*32 - 30, 30);
+        right.draw(g, INTERNALW - Board.WIDTH * 32 - 30, 30);
         SpecialEffects.draw(g);
-        
+
         if (winner != null) {
             String str = "PLAYER ";
-            if (winner == left)
+            if (winner == left) {
                 str += "1";
-            else
+            } else {
                 str += "2";
+            }
             str += " IS THE WINNER!";
-            
+
             Font f = g.getFont();
             int strW = f.getWidth(str);
             int centerOnX = MyGame.INTERNALW / 2;

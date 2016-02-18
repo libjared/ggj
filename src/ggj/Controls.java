@@ -11,44 +11,44 @@ class Controls {
     static GameContainer gameContainer;
     static MyControllerListener myControllerListener;
     static Input gcInput;
-    
+
     final private static int SNES_B = 2; //18 on mac
     final private static int SNES_A = 1; //19 on mac
     final private static int SNES_X = 0; //16 on mac
-    
+
     final private static int CONTROLLERBUTTONSHUFFLE = SNES_B;
     final private static int CONTROLLERBUTTONSUMMON = SNES_A;
     final private static int CONTROLLERBUTTONDRAIN = SNES_X;
-    
+
     static void start(GameContainer gc) {
         gameContainer = gc;
         myControllerListener = new MyControllerListener();
         gcInput = gameContainer.getInput();
         gcInput.addControllerListener(myControllerListener);
     }
-    
+
     static boolean getDown() {
         return gcInput.isControllerDown(myControllerListener.getLastControllerToGetUsed());
     }
-    
+
     static boolean getLeft() {
         return gcInput.isControllerLeft(myControllerListener.getLastControllerToGetUsed());
     }
-    
+
     static boolean getRight() {
         return gcInput.isControllerRight(myControllerListener.getLastControllerToGetUsed());
     }
-    
+
     static boolean getShuf() {
         return gcInput.isButtonPressed(CONTROLLERBUTTONSHUFFLE,
                 myControllerListener.getLastControllerToGetUsed());
     }
-    
+
     static boolean getSummon() {
         return gcInput.isButtonPressed(CONTROLLERBUTTONSUMMON,
                 myControllerListener.getLastControllerToGetUsed());
     }
-    
+
     static boolean getDrain() {
         return gcInput.isButtonPressed(CONTROLLERBUTTONDRAIN,
                 myControllerListener.getLastControllerToGetUsed());
@@ -56,12 +56,13 @@ class Controls {
 }
 
 class MyControllerListener implements ControllerListener {
+
     private int lastControllerToGetUsed = 0;
-    
+
     public int getLastControllerToGetUsed() {
         return lastControllerToGetUsed;
     }
-    
+
     @Override
     public void controllerLeftPressed(int controllerId) {
         lastControllerToGetUsed = controllerId;
@@ -85,7 +86,7 @@ class MyControllerListener implements ControllerListener {
     @Override
     public void controllerButtonPressed(int controllerId, int buttonCode) {
         lastControllerToGetUsed = controllerId;
-        Logger.getLogger(MyControllerListener.class.getName()).log(Level.WARNING, String.format("Controller#%d pressed button with code %d", controllerId, buttonCode-1));
+        Logger.getLogger(MyControllerListener.class.getName()).log(Level.WARNING, String.format("Controller#%d pressed button with code %d", controllerId, buttonCode - 1));
     }
 
     @Override
@@ -99,17 +100,30 @@ class MyControllerListener implements ControllerListener {
     }
 
     @Override
-    public void inputStarted() {}
+    public void inputStarted() {
+    }
+
     @Override
-    public void inputEnded() {}
+    public void inputEnded() {
+    }
+
     @Override
-    public void controllerButtonReleased(int i, int i1) {}
+    public void controllerButtonReleased(int i, int i1) {
+    }
+
     @Override
-    public void controllerUpReleased(int i) {}
+    public void controllerUpReleased(int i) {
+    }
+
     @Override
-    public void controllerDownReleased(int i) {}
+    public void controllerDownReleased(int i) {
+    }
+
     @Override
-    public void controllerLeftReleased(int i) {}
+    public void controllerLeftReleased(int i) {
+    }
+
     @Override
-    public void controllerRightReleased(int i) {}
+    public void controllerRightReleased(int i) {
+    }
 }

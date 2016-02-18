@@ -6,6 +6,7 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
 public class Program {
+
     public static void main(String[] args) {
         JavaBoilerplate.setupLibrarySupport();
 
@@ -15,7 +16,7 @@ public class Program {
             int internalh = 600;
             int realwindoww = 1280;
             int realwindowh = 960;
-            
+
             MyGame mg = new MyGame("Gem Monsters", internalw, internalh, realwindoww, realwindowh);
             appgc = new AppGameContainer(mg);
             appgc.setDisplayMode(realwindoww, realwindowh, false);
