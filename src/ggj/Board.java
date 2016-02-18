@@ -226,13 +226,8 @@ public class Board {
 
     private void doGreenMagic() {
         //color snipe
-        //X Attack 
-        int xn = rng.nextInt(10);
-        boolean XAttack = false;
-
-        if (xn == 1) {
-            XAttack = true;
-        }
+        //X Attack
+        boolean XAttack = rng.nextInt(10) == 1;
 
         int biggestColor = getBiggestColor();
 
