@@ -19,7 +19,7 @@ public class Program {
             MyGame mg = new MyGame("Gem Monsters", internalw, internalh, realwindoww, realwindowh);
             appgc = new AppGameContainer(mg);
             appgc.setDisplayMode(realwindoww, realwindowh, false);
-            appgc.setVSync(true);
+            appgc.setTargetFrameRate(60);
             appgc.start();
         } catch (SlickException ex) {
             Logger.getLogger(MyGame.class.getName()).log(Level.SEVERE, null, ex);
