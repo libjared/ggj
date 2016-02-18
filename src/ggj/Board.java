@@ -774,6 +774,19 @@ public class Board {
         rngBuf.add(newRand);
         return rngBuf.remove(0);
     }
+    
+    /**
+     * Returns a random color except the one passed as the argument (yellow support)
+     * @param col
+     * @return an integer to represent a gem by color
+     */
+    private int randomColorExcept(int col){
+        int randResult = useRngToMakeANewColor();
+        while(randResult == col){
+            randResult = useRngToMakeANewColor();
+        }
+        return randResult;
+    }
 
     private int useRngToMakeANewColor() {
         return rng.nextInt(5) + 1;
