@@ -6,7 +6,7 @@ package ggj;
  */
 public abstract class Summon {
 
-    private GemType color;
+    private final GemType color;
 
     public Summon(GemType color) {
         this.color = color;

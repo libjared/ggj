@@ -6,7 +6,7 @@ package ggj;
  */
 public class Gem {
 
-    private GemType color;
+    private final GemType color;
 
     public Gem(GemType color) {
         this.color = color;
