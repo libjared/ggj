@@ -5,7 +5,7 @@ import ggj.Gem;
 import ggj.GemType;
 
 public class RedSummon extends Summon {
-    
+
     static int redCall = 0;
 
     public RedSummon() {

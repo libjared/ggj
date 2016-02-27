@@ -7,7 +7,7 @@ public class SummonSet {
     private final BlueSummon blue;
     private final YellowSummon yellow;
     private final PurpleSummon purple;
-    
+
     public SummonSet() {
         red = new RedSummon();
         green = new GreenSummon();

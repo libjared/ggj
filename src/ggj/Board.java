@@ -82,11 +82,11 @@ public class Board {
     public GemFactory getGemFactory() {
         return gf;
     }
-    
+
     public SummonSet getSummonSet() {
         return summonSet;
     }
-    
+
     private void checkForDeath() {
         if (gemExistsAt(WIDTH / 2, 0) && !doesNeedGravity()) {
             MyGame.winner = getOtherBoard();
@@ -119,7 +119,7 @@ public class Board {
         ContentContainer.summonSoundFromColor(summonColor).play();
 
         Summon currSummon;
-        
+
         switch (summonColor) {
             default:
                 throw new ArrayIndexOutOfBoundsException();
@@ -139,7 +139,7 @@ public class Board {
                 currSummon = summonSet.getPurple();
                 break;
         }
-        
+
         currSummon.activateSummon(this, getOtherBoard());
 
         SpecialEffects.setSummon(summonColor);

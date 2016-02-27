@@ -6,7 +6,7 @@ import ggj.GemType;
 import java.util.Random;
 
 public class GreenSummon extends Summon {
-    
+
     Random greenRng = new Random();
 
     public GreenSummon() {
@@ -23,12 +23,13 @@ public class GreenSummon extends Summon {
         for (int y = 0; y < Board.HEIGHT; y++) {
             for (int x = 0; x < Board.WIDTH; x++) {
                 Gem gemHere = me.getSpace(y, x);
-                
-                if (gemHere == null)
+
+                if (gemHere == null) {
                     continue;
-                
+                }
+
                 GemType colorHere = gemHere.getColor();
-                
+
                 if (colorHere == biggestColor) {
                     if (xattack) {
                         me.destroyGem(x - 1, y - 1);

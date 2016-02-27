@@ -11,12 +11,13 @@ public class BlueSummon extends Summon {
     }
 
     Random blueRng = new Random();
+
     private int getBlueRandomRange() {
         int max = 15; //TODO magic numbers
         int min = 7;
         return blueRng.nextInt(max - min + 1) + min;
     }
-    
+
     @Override
     public void activateSummon(Board me, Board them) {
         // destroys gems in three diagonal lines (no duplicates)
