@@ -11,12 +11,11 @@ package ggj;
  */
 
 
-public class Gems {
-    
+public class Gem {
     
     private GemType color;
     
-    public Gems(GemType color){
+    public Gem(GemType color){
         this.color = color;
     }
     
