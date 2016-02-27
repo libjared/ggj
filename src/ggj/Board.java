@@ -15,7 +15,7 @@ public class Board {
 
     public static final int WIDTH = 8;
     public static final int HEIGHT = 16;
-    Random rng = new Random();
+    private final GemFactory gf;
     public static int redCall = 0;
 
     //none,R,G,B,Y,P is 0 to 5
@@ -41,10 +41,9 @@ public class Board {
 
         this.markedForDeath = new ArrayList<>();
         spaces = new Gem[HEIGHT][WIDTH];
-        rngBuf = new ArrayList<>();
-        ensureBuffer(100);
 
-        generateFallingGems();
+        gf = new GemFactory();
+        fallingGems = gf.generateFallingGems();
     }
 
     private boolean kLeftLast;
@@ -139,7 +138,7 @@ public class Board {
     private void remakeBoardWithHeight(int h) {
         for (int y = h; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                setSpace(y, x, new Gem(randomGemColor()));
+                setSpace(y, x, new Gem(gf.randomGemColor()));
             }
         }
     }
@@ -208,16 +207,18 @@ public class Board {
         }
     }
 
+    Random blueRng = new Random();
     private int getBlueRandomRange() {
         int max = 15;
         int min = 7;
-        return rng.nextInt(max - min + 1) + min;
+        return blueRng.nextInt(max - min + 1) + min;
     }
 
+    Random greenRng = new Random();
     private void doGreenMagic() {
         //color snipe
         //X Attack
-        boolean XAttack = rng.nextInt(10) == 1;
+        boolean XAttack = greenRng.nextInt(10) == 1;
 
         GemType biggestColor = getBiggestColor();
 
@@ -251,7 +252,7 @@ public class Board {
         }
         for (int i = 0; i < redRows; i++) {
             for (int x = 0; x < WIDTH; x++) {
-                setSpace(i, x, new Gem(randomGemColor()));
+                setSpace(i, x, new Gem(gf.randomGemColor()));
             }
         }
 
@@ -712,7 +713,7 @@ public class Board {
             nextX = 458;
         }
 
-        GemType[] nextThree = peekNextThree();
+        GemType[] nextThree = gf.peekNextThree();
 
         for (int i = 0; i < nextThree.length; i++) {
             g.drawImage(imageCol(nextThree[i]),
@@ -727,14 +728,6 @@ public class Board {
         int finalX = x * 32 + offsetx;
         float finalY = y * 32 + offsety;
         g.drawImage(imageCol(color.getColor()), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
-    }
-
-    private void generateFallingGems() {
-        fallingGems = new Gem[]{
-            new Gem(randomGemColor()),
-            new Gem(randomGemColor()),
-            new Gem(randomGemColor())
-        };
     }
 
     private void collideFallingGems() {
@@ -756,7 +749,7 @@ public class Board {
 
             ContentContainer.getDink().play(1f + (float) Math.random() * 0.3f, 1f);
 
-            generateFallingGems();
+            gf.generateFallingGems();
 
             fallingGemX = WIDTH / 2;
             fallingGemY = -3;
@@ -769,45 +762,6 @@ public class Board {
 
     private Image imageCol(GemType col) {
         return ContentContainer.imageFromColor(col);
-    }
-
-    ArrayList<GemType> rngBuf;
-
-    private GemType randomGemColor() {
-        GemType newRand = useRngToMakeANewColor();
-        rngBuf.add(newRand);
-        return rngBuf.remove(0);
-    }
-
-    private GemType useRngToMakeANewColor() {
-        int result = rng.nextInt(5) + 1;
-        switch (result) {
-            case 1:
-                return GemType.RED;
-            case 2:
-                return GemType.GREEN;
-            case 3:
-                return GemType.BLUE;
-            case 4:
-                return GemType.YELLOW;
-            case 5:
-                return GemType.PURPLE;
-        }
-        throw new IndexOutOfBoundsException();
-    }
-
-    private void ensureBuffer(int n) {
-        while (rngBuf.size() < n) {
-            rngBuf.add(useRngToMakeANewColor());
-        }
-    }
-
-    public GemType[] peekNextThree() {
-        return new GemType[]{
-            rngBuf.get(0),
-            rngBuf.get(1),
-            rngBuf.get(2)
-        };
     }
 
     Gem getSpace(int y, int x) {
