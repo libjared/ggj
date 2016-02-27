@@ -1,6 +1,8 @@
 package ggj;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -17,17 +19,17 @@ public class Board {
     public static int redCall = 0;
 
     //none,R,G,B,Y,P is 0 to 5
-    int[][] spaces;
+    Gem[][] spaces;
 
     int fallingGemX = WIDTH / 2;
     float fallingGemY = -3;
-    int[] fallingGems;
+    Gem[] fallingGems;
 
     ArrayList<int[]> markedForDeath;
 
     final int KILLSTOSUMMON = 20;
     int kills = 0;
-    int summonColor = 0;
+    GemType summonColor = null;
 
     public boolean PLAYERONE;
 
@@ -38,7 +40,7 @@ public class Board {
         PLAYERONE = playerOne;
 
         this.markedForDeath = new ArrayList<>();
-        spaces = new int[HEIGHT][WIDTH];
+        spaces = new Gem[HEIGHT][WIDTH];
         rngBuf = new ArrayList<>();
         ensureBuffer(100);
 
@@ -99,13 +101,13 @@ public class Board {
 
             //then reset
             kills = 0;
-            summonColor = 0;
+            summonColor = null;
         }
 
         //if you want your summon meter reset
         if (kills > 0 && kDrain && !kDrainLast) {
             kills = 0;
-            summonColor = 0;
+            summonColor = null;
             ContentContainer.getVanish().play();
         }
     }
@@ -117,22 +119,21 @@ public class Board {
         ContentContainer.summonSoundFromColor(summonColor).play();
 
         switch (summonColor) {
-            case 0:
             default:
                 throw new ArrayIndexOutOfBoundsException();
-            case 1:
+            case RED:
                 getOtherBoard().doRedMagic();
                 break;
-            case 2:
+            case GREEN:
                 doGreenMagic();
                 break;
-            case 3:
+            case BLUE:
                 doBlueMagic();
                 break;
-            case 4:
+            case YELLOW:
                 doYellowMagic();
                 break;
-            case 5:
+            case PURPLE:
                 getOtherBoard().doPurpleMagic();
                 break;
         }
@@ -149,7 +150,7 @@ public class Board {
     private void remakeBoardWithHeight(int h) {
         for (int y = h; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                setSpace(y, x, randomColor());
+                setSpace(y, x, new Gem(randomGemColor()));
             }
         }
     }
@@ -229,11 +230,11 @@ public class Board {
         //X Attack
         boolean XAttack = rng.nextInt(10) == 1;
 
-        int biggestColor = getBiggestColor();
+        GemType biggestColor = getBiggestColor();
 
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                int colorHere = getSpace(y, x);
+                GemType colorHere = getSpace(y, x).getColor();
                 if (colorHere == biggestColor) {
                     if (XAttack) {
                         destroyGem(x, y);
@@ -261,31 +262,40 @@ public class Board {
         }
         for (int i = 0; i < redRows; i++) {
             for (int x = 0; x < WIDTH; x++) {
-                setSpace(i, x, randomColor());
+                setSpace(i, x, new Gem(randomGemColor()));
             }
         }
 
     }
 
-    private int getBiggestColor() {
-        int biggestColor;
-        int[] colorCounts = new int[6]; //dont use index [0]
+    private GemType getBiggestColor() {
+        HashMap<GemType, Integer> counts = new HashMap<>();
+
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                int colorHere = getSpace(y, x);
-                colorCounts[colorHere]++;
+                GemType colorHere = getSpace(y, x).getColor();
+
+                Integer thisColor = counts.get(colorHere);
+                if (thisColor == null) {
+                    thisColor = 0;
+                }
+
+                thisColor++;
+
+                counts.put(colorHere, thisColor);
             }
         }
-        biggestColor = -1;
-        int biggestColorCount = 0;
-        for (int i = 1; i < colorCounts.length; i++) {
-            int countHere = colorCounts[i];
-            if (countHere > biggestColorCount) {
-                biggestColorCount = countHere;
-                biggestColor = i;
+
+        Entry<GemType, Integer> maxEntry = null;
+
+        for (Entry<GemType, Integer> entry : counts.entrySet()) {
+            assert entry.getValue() != null; //if I could use int, I would. no nulls, please.
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = entry;
             }
         }
-        return biggestColor;
+        assert maxEntry != null;
+        return maxEntry.getKey();
     }
 
     private Board getOtherBoard() {
@@ -319,7 +329,7 @@ public class Board {
 
     private boolean doesNeedGravity() {
         for (int x = 0; x < WIDTH; x++) {
-            ArrayList<Integer> thisCol = columnToArrayList(x);
+            ArrayList<Gem> thisCol = columnToArrayList(x);
             if (columnNeedsGravity(thisCol)) {
                 return true;
             }
@@ -361,7 +371,7 @@ public class Board {
 
         //shuffle
         if (kShuf && !kShufLast) {
-            int[] newGems = new int[3];
+            Gem[] newGems = new Gem[3];
             newGems[0] = fallingGems[2];
             newGems[1] = fallingGems[0];
             newGems[2] = fallingGems[1];
@@ -411,7 +421,7 @@ public class Board {
         for (int dir = 0; dir < 8; dir++) {
             ArrayList<int[]> matchPoints = new ArrayList<>();
 
-            int matchColor = -1;
+            GemType matchColor = null;
             for (int i = 0; i < HEIGHT; i++) {
                 int newX = withDirection(dir, i)[0] + x;
                 int newY = withDirection(dir, i)[1] + y;
@@ -419,9 +429,16 @@ public class Board {
                     break;
                 }
 
-                int colorHere = getSpace(newY, newX);
+                Gem something = getSpace(newY, newX);
 
-                if (matchColor == -1 || matchColor == colorHere) {
+                if (something == null) //no idea about this
+                {
+                    continue;
+                }
+
+                GemType colorHere = something.getColor();
+
+                if (matchColor == null || matchColor == colorHere) {
                     matchColor = colorHere;
                     matchPoints.add(new int[]{newX, newY});
                 } else { //not the color we're looking for, and said color is already set
@@ -447,7 +464,7 @@ public class Board {
         }
 
         //check if empty
-        if (getSpace(y, x) == 0) {
+        if (getSpace(y, x) == null) {
             return;
         }
 
@@ -467,7 +484,7 @@ public class Board {
     private boolean fallColumn(int x) {
         boolean didFall = false;
 
-        ArrayList<Integer> newCol = columnToArrayList(x);
+        ArrayList<Gem> newCol = columnToArrayList(x);
 
         boolean needGravity = columnNeedsGravity(newCol);
 
@@ -477,7 +494,7 @@ public class Board {
 
         //delete the first 0 from the bottom
         for (int i = 0; i < newCol.size(); i++) {
-            if (newCol.get(i) == 0) {
+            if (newCol.get(i) == null) {
                 newCol.remove(i);
                 didFall = true;
                 break;
@@ -486,7 +503,7 @@ public class Board {
 
         //pad with 0s to get HEIGHT-1 elements
         while (newCol.size() != HEIGHT) {
-            newCol.add(0);
+            newCol.add(null);
         }
 
         //copy back to column
@@ -498,21 +515,21 @@ public class Board {
         return didFall;
     }
 
-    private ArrayList<Integer> columnToArrayList(int x) {
+    private ArrayList<Gem> columnToArrayList(int x) {
         //convert column to arraylist
-        ArrayList<Integer> newCol = new ArrayList<>();
+        ArrayList<Gem> newCol = new ArrayList<>();
         for (int y = HEIGHT - 1; y >= 0; y--) {
             newCol.add(getSpace(y, x));
         }
         return newCol;
     }
 
-    private boolean columnNeedsGravity(ArrayList<Integer> newCol) {
+    private boolean columnNeedsGravity(ArrayList<Gem> newCol) {
         //check if the column is settled already
         boolean needGravity = false;
         boolean hitANothing = false;
         for (int i = 0; i < newCol.size(); i++) {
-            if (newCol.get(i) == 0) {
+            if (newCol.get(i) == null) {
                 hitANothing = true;
             } else if (hitANothing) {
                 //we've hit a space before, and the current gem exists above it
@@ -532,16 +549,16 @@ public class Board {
             int[] gem = markedForDeath.get(i);
             int theX = gem[0];
             int theY = gem[1];
-            int theColor = getSpace(theY, theX);
+            GemType theColor = getSpace(theY, theX).getColor();
 
-            if (summonColor == 0) //first hit, set summon color
+            if (summonColor == null) //first hit, set summon color
             {
                 summonColor = theColor;
             }
 
             SpecialEffects.addCrash(theX, theY, offsetx, offsety, theColor);
 
-            setSpace(theY, theX, 0);
+            setSpace(theY, theX, null);
         }
         kills += markedForDeath.size();
         markedForDeath.clear();
@@ -609,7 +626,7 @@ public class Board {
             } else {
                 wooshyWooshColorThing = 0f;
             }
-            Color newCol = colorFromInt(summonColor).scaleCopy(colScalar);
+            Color newCol = colorFromGemType(summonColor).scaleCopy(colScalar);
             newCol.a = 1f;
             g.setColor(newCol);
             g.fillRect(this.offsetx, HEIGHT * 32 + 48f, ratio * WIDTH * 32, 32);
@@ -621,20 +638,19 @@ public class Board {
 
     private float wooshyWooshColorThing = 0f;
 
-    private static Color colorFromInt(int i) {
-        switch (i) {
-            case 0:
+    private static Color colorFromGemType(GemType col) {
+        switch (col) {
             default:
                 return Color.white;
-            case 1:
+            case RED:
                 return Color.red;
-            case 2:
+            case GREEN:
                 return Color.green;
-            case 3:
+            case BLUE:
                 return Color.cyan;
-            case 4:
+            case YELLOW:
                 return Color.yellow;
-            case 5:
+            case PURPLE:
                 return new Color(102, 51, 153); //purple
         }
     }
@@ -642,11 +658,11 @@ public class Board {
     private void drawBoardGems(Graphics g) {
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                int color = getSpace(y, x);
-                if (color == 0) {
+                Gem gem = getSpace(y, x);
+                if (gem == null) {
                     continue;
                 }
-                drawGem(g, color, x, y);
+                drawGem(g, gem, x, y);
             }
         }
     }
@@ -662,28 +678,28 @@ public class Board {
             float finalY;
 
             //first (from third)
-            int color1 = fallingGems[0];
+            Gem color1 = fallingGems[0];
             finalY = fallingGemY * 32 + offsety;
             float finalBottomY = (fallingGemY + 1 - ratio) * 32 + offsety;
-            g.drawImage(imageCol(color1),
+            g.drawImage(imageCol(color1.getColor()),
                     finalX, finalY,
                     finalX + 32, finalBottomY,
                     0, 64 * ratio, 64, 64);
 
             //second (from first)
-            int color2 = fallingGems[1];
+            Gem color2 = fallingGems[1];
             finalY = (fallingGemY + 1 - ratio) * 32 + offsety;
             finalBottomY = finalY + 32;
-            g.drawImage(imageCol(color2),
+            g.drawImage(imageCol(color2.getColor()),
                     finalX, finalY,
                     finalX + 32, finalBottomY,
                     0, 0, 64, 64);
 
             //third (from second)
-            int color3 = fallingGems[2];
+            Gem color3 = fallingGems[2];
             finalY = (fallingGemY + 2 - ratio) * 32 + offsety;
             finalBottomY = finalY + 32;
-            g.drawImage(imageCol(color3),
+            g.drawImage(imageCol(color3.getColor()),
                     finalX, finalY,
                     finalX + 32, finalBottomY,
                     0, 0, 64, 64);
@@ -691,7 +707,7 @@ public class Board {
             //fourth! (from third)
             finalY = (fallingGemY + 3 - ratio) * 32 + offsety;
             finalBottomY = (fallingGemY + 3) * 32 + offsety;
-            g.drawImage(imageCol(color1),
+            g.drawImage(imageCol(color1.getColor()),
                     finalX, finalY,
                     finalX + 32, finalBottomY,
                     0, 0, 64, ratio * 64);
@@ -707,7 +723,7 @@ public class Board {
             nextX = 458;
         }
 
-        int[] nextThree = peekNextThree();
+        GemType[] nextThree = peekNextThree();
 
         for (int i = 0; i < nextThree.length; i++) {
             g.drawImage(imageCol(nextThree[i]),
@@ -718,14 +734,18 @@ public class Board {
         }
     }
 
-    private void drawGem(Graphics g, int color, int x, float y) {
+    private void drawGem(Graphics g, Gem color, int x, float y) {
         int finalX = x * 32 + offsetx;
         float finalY = y * 32 + offsety;
-        g.drawImage(imageCol(color), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
+        g.drawImage(imageCol(color.getColor()), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
     }
 
     private void generateFallingGems() {
-        fallingGems = new int[]{randomColor(), randomColor(), randomColor()};
+        fallingGems = new Gem[]{
+            new Gem(randomGemColor()),
+            new Gem(randomGemColor()),
+            new Gem(randomGemColor())
+        };
     }
 
     private void collideFallingGems() {
@@ -755,36 +775,51 @@ public class Board {
     }
 
     private boolean gemExistsAt(int x, int y) {
-        return getSpace(y, x) != 0;
+        return getSpace(y, x) != null;
     }
 
-    private Image imageCol(int col) {
+    private Image imageCol(GemType col) {
         return ContentContainer.imageFromColor(col);
     }
 
-    ArrayList<Integer> rngBuf;
+    ArrayList<GemType> rngBuf;
 
-    private int randomColor() {
-        int newRand = useRngToMakeANewColor();
+    private GemType randomGemColor() {
+        GemType newRand = useRngToMakeANewColor();
         rngBuf.add(newRand);
         return rngBuf.remove(0);
     }
-    
+
     /**
-     * Returns a random color except the one passed as the argument (yellow support)
+     * Returns a random color except the one passed as the argument (yellow
+     * support)
+     *
      * @param col
      * @return an integer to represent a gem by color
      */
-    private int randomColorExcept(int col){
-        int randResult = useRngToMakeANewColor();
-        while(randResult == col){
+    private GemType randomColorExcept(GemType col) {
+        GemType randResult = useRngToMakeANewColor();
+        while (randResult == col) {
             randResult = useRngToMakeANewColor();
         }
         return randResult;
     }
 
-    private int useRngToMakeANewColor() {
-        return rng.nextInt(5) + 1;
+    private GemType useRngToMakeANewColor() {
+        int result = rng.nextInt(5) + 1;
+        switch (result) {
+            case 1:
+                return GemType.RED;
+            case 2:
+                return GemType.GREEN;
+            case 3:
+                return GemType.BLUE;
+            case 4:
+                return GemType.YELLOW;
+            case 5:
+                return GemType.PURPLE;
+        }
+        throw new IndexOutOfBoundsException();
     }
 
     private void ensureBuffer(int n) {
@@ -793,15 +828,19 @@ public class Board {
         }
     }
 
-    public int[] peekNextThree() {
-        return new int[]{rngBuf.get(0), rngBuf.get(1), rngBuf.get(2)};
+    public GemType[] peekNextThree() {
+        return new GemType[]{
+            rngBuf.get(0),
+            rngBuf.get(1),
+            rngBuf.get(2)
+        };
     }
 
-    int getSpace(int y, int x) {
+    Gem getSpace(int y, int x) {
         return spaces[y][x];
     }
 
-    void setSpace(int y, int x, int col) {
+    void setSpace(int y, int x, Gem col) {
         spaces[y][x] = col;
     }
 }

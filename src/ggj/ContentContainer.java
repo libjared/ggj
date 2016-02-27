@@ -82,75 +82,69 @@ public class ContentContainer {
         return boardGui;
     }
 
-    static Sound summonSoundFromColor(int col) {
-        if (col == 0) {
-            assert Boolean.TRUE;
+    static Sound summonSoundFromColor(GemType col) {
+        if (col == null) {
+            throw new IllegalArgumentException();
         }
 
         //_rgbyp
         switch (col) {
-            case 0:
-                return null;
-            case 1:
+            case RED:
                 return sRed;
-            case 2:
+            case GREEN:
                 return sGreen;
-            case 3:
+            case BLUE:
                 return sBlue;
-            case 4:
+            case YELLOW:
                 return sYellow;
-            case 5:
+            case PURPLE:
                 return sPurple;
             default:
-                return null;
+                throw new IndexOutOfBoundsException();
         }
     }
 
-    static Image summonFromColor(int col) {
-        if (col == 0) {
-            assert Boolean.TRUE;
+    static Image summonFromColor(GemType col) {
+        if (col == null) {
+            throw new IllegalArgumentException();
         }
 
         //_rgbyp
         switch (col) {
-            case 0:
-                return null;
-            case 1:
+            case RED:
                 return redS;
-            case 2:
+            case GREEN:
                 return greenS;
-            case 3:
+            case BLUE:
                 return blueS;
-            case 4:
+            case YELLOW:
                 return yellowS;
-            case 5:
+            case PURPLE:
                 return purpleS;
             default:
-                return null;
+                throw new IndexOutOfBoundsException();
         }
     }
 
-    static Image imageFromColor(int col) {
-        if (col == 0) {
-            assert Boolean.TRUE;
+    static Image imageFromColor(GemType col) {
+        if (col == null) {
+            throw new IllegalArgumentException();
         }
 
         //_rgbyp
         switch (col) {
-            case 0:
-                return null;
-            case 1:
+            case RED:
                 return getRed();
-            case 2:
+            case GREEN:
                 return getGreen();
-            case 3:
+            case BLUE:
                 return getBlue();
-            case 4:
+            case YELLOW:
                 return getYellow();
-            case 5:
+            case PURPLE:
                 return getPurple();
             default:
-                return null;
+                throw new IndexOutOfBoundsException();
         }
     }
 

@@ -12,7 +12,7 @@ public class SpecialEffects {
 
     static SummonFx currentSummon;
 
-    public static void addCrash(int x, int y, int offsetx, int offsety, int color) {
+    public static void addCrash(int x, int y, int offsetx, int offsety, GemType color) {
         CrashFx fx = new CrashFx();
         fx.x = x * 32 + offsetx;
         fx.y = y * 32 + offsety;
@@ -23,26 +23,25 @@ public class SpecialEffects {
         crash.add(fx);
     }
 
-    public static void setSummon(int color) {
+    public static void setSummon(GemType color) {
         currentSummon = new SummonFx();
         currentSummon.img = ContentContainer.summonFromColor(color).copy();
         currentSummon.ticker = tickerFromColor(color);
     }
 
-    public static String tickerFromColor(int col) {
+    public static String tickerFromColor(GemType col) {
         switch (col) {
-            case 0:
             default:
                 return "AN ACCIDENT...";
-            case 1:
+            case RED:
                 return "PYROCLASTIC ROAR";
-            case 2:
+            case GREEN:
                 return "WIND SLASH";
-            case 3:
+            case BLUE:
                 return "TIDAL CRASH";
-            case 4:
+            case YELLOW:
                 return "JUSTICE'S LIGHT";
-            case 5:
+            case PURPLE:
                 return "GRIM GRAVITY";
         }
     }
