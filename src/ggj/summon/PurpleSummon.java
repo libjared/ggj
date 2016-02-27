@@ -1,16 +1,17 @@
 package ggj.summon;
 
+import ggj.Board;
 import ggj.GemType;
 
 public class PurpleSummon extends Summon {
 
-    public PurpleSummon(GemType color) {
-        super(color);
+    public PurpleSummon() {
+        super(GemType.PURPLE);
     }
 
     @Override
-    public void activateSummon() {
-        throw new UnsupportedOperationException();
+    public void activateSummon(Board me, Board them) {
+        them.setHasteTimer(Board.HASTETIMERMAX);
     }
 
 }

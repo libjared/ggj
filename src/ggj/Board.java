@@ -1,5 +1,7 @@
 package ggj;
 
+import ggj.summon.Summon;
+import ggj.summon.SummonSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -16,6 +18,7 @@ public class Board {
     public static final int WIDTH = 8;
     public static final int HEIGHT = 16;
     private final GemFactory gf;
+    private final SummonSet summonSet;
     public static int redCall = 0;
 
     //none,R,G,B,Y,P is 0 to 5
@@ -29,12 +32,12 @@ public class Board {
 
     final int KILLSTOSUMMON = 20;
     int kills = 0;
-    GemType summonColor = null;
+    private GemType summonColor = null;
 
     public boolean PLAYERONE;
 
-    int hasteTimer = 0;
-    final int HASTETIMERMAX = 7 * 60; //7s
+    private int hasteTimer = 0;
+    public static final int HASTETIMERMAX = 7 * 60; //7s
 
     public Board(boolean playerOne) throws SlickException {
         PLAYERONE = playerOne;
@@ -43,6 +46,7 @@ public class Board {
         spaces = new Gem[HEIGHT][WIDTH];
 
         gf = new GemFactory();
+        summonSet = new SummonSet();
         fallingGems = gf.generateFallingGems();
     }
 
@@ -75,6 +79,14 @@ public class Board {
         updateSummon();
     }
 
+    public GemFactory getGemFactory() {
+        return gf;
+    }
+    
+    public SummonSet getSummonSet() {
+        return summonSet;
+    }
+    
     private void checkForDeath() {
         if (gemExistsAt(WIDTH / 2, 0) && !doesNeedGravity()) {
             MyGame.winner = getOtherBoard();
@@ -106,36 +118,34 @@ public class Board {
 
         ContentContainer.summonSoundFromColor(summonColor).play();
 
+        Summon currSummon;
+        
         switch (summonColor) {
             default:
                 throw new ArrayIndexOutOfBoundsException();
             case RED:
-                getOtherBoard().doRedMagic();
+                currSummon = summonSet.getRed();
                 break;
             case GREEN:
-                doGreenMagic();
+                currSummon = summonSet.getGreen();
                 break;
             case BLUE:
-                doBlueMagic();
+                currSummon = summonSet.getBlue();
                 break;
             case YELLOW:
-                doYellowMagic();
+                currSummon = summonSet.getYellow();
                 break;
             case PURPLE:
-                getOtherBoard().doPurpleMagic();
+                currSummon = summonSet.getPurple();
                 break;
         }
+        
+        currSummon.activateSummon(this, getOtherBoard());
 
         SpecialEffects.setSummon(summonColor);
     }
 
-    private void doYellowMagic() {
-        int averageHeight = (findHeight() + getOtherBoard().findHeight()) / 2;
-        remakeBoardWithHeight(averageHeight);
-        getOtherBoard().remakeBoardWithHeight(averageHeight);
-    }
-
-    private void remakeBoardWithHeight(int h) {
+    public void remakeBoardWithHeight(int h) {
         for (int y = h; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 setSpace(y, x, new Gem(gf.randomGemColor()));
@@ -143,7 +153,7 @@ public class Board {
         }
     }
 
-    private int findHeight() {
+    public int findAverageHeight() {
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 if (gemExistsAt(x, y)) {
@@ -154,111 +164,7 @@ public class Board {
         return HEIGHT;
     }
 
-    private void doPurpleMagic() {
-        hasteTimer = HASTETIMERMAX;
-    }
-
-    private void doBlueMagic() {
-        //shift all to right
-        //int[][] newSpaces = cloneSpaces();
-        /*for (int y = 0; y < HEIGHT; y++) {
-         for (int x = WIDTH - 1; x >= 0; x--) {
-         int colorThere;
-         if (isValid(x - 1, y)) {
-         colorThere = getSpace(y, x - 1);
-         } else {
-         colorThere = 0;
-         }
-         setSpace(y, x, colorThere);
-         }
-         }*/
-        // destroys gems in three diagonal lines (no duplicates)
-
-        boolean duplicatesCheck = true;
-
-        int diagonalS1 = getBlueRandomRange();
-        int diagonalS2 = getBlueRandomRange();
-        int diagonalS3 = getBlueRandomRange();
-
-        do {
-            if (diagonalS1 == diagonalS2) {
-                diagonalS2 = getBlueRandomRange();
-                continue;
-            }
-            if (diagonalS2 == diagonalS3) {
-                diagonalS3 = getBlueRandomRange();
-                continue;
-            }
-            if (diagonalS3 == diagonalS1) {
-                diagonalS1 = getBlueRandomRange();
-                continue;
-            }
-            duplicatesCheck = false;
-        } while (duplicatesCheck);
-
-        for (int i = 0; i < WIDTH; i++) {
-            destroyGem(i, diagonalS1);
-            destroyGem(i, diagonalS2);
-            destroyGem(i, diagonalS3);
-
-            diagonalS1--;
-            diagonalS2--;
-            diagonalS3--;
-        }
-    }
-
-    Random blueRng = new Random();
-    private int getBlueRandomRange() {
-        int max = 15;
-        int min = 7;
-        return blueRng.nextInt(max - min + 1) + min;
-    }
-
-    Random greenRng = new Random();
-    private void doGreenMagic() {
-        //color snipe
-        //X Attack
-        boolean XAttack = greenRng.nextInt(10) == 1;
-
-        GemType biggestColor = getBiggestColor();
-
-        for (int y = 0; y < HEIGHT; y++) {
-            for (int x = 0; x < WIDTH; x++) {
-                GemType colorHere = getSpace(y, x).getColor();
-                if (colorHere == biggestColor) {
-                    if (XAttack) {
-                        destroyGem(x, y);
-                        destroyGem(x - 1, y - 1);
-                        destroyGem(x - 1, y + 1);
-                        destroyGem(x + 1, y - 1);
-                        destroyGem(x + 1, y + 1);
-                        continue;
-                    }
-                    destroyGem(x, y);
-                }
-            }
-        }
-    }
-
-    private void doRedMagic() {
-        //spawn junk on the top rows
-        redCall++;
-        int redRows = 1;
-        if (redCall > 4) {
-            redRows = 2;
-            if (redCall > 8) {
-                redRows = 3;
-            }
-        }
-        for (int i = 0; i < redRows; i++) {
-            for (int x = 0; x < WIDTH; x++) {
-                setSpace(i, x, new Gem(gf.randomGemColor()));
-            }
-        }
-
-    }
-
-    private GemType getBiggestColor() {
+    public GemType getBiggestColor() {
         HashMap<GemType, Integer> counts = new HashMap<>();
 
         for (int y = 0; y < HEIGHT; y++) {
@@ -446,7 +352,7 @@ public class Board {
         }
     }
 
-    private void destroyGem(int x, int y) {
+    public void destroyGem(int x, int y) {
         //check if in bounds
         if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
             System.out.format("(x:%d, y:%d) is shit%n", x, y);
@@ -764,11 +670,14 @@ public class Board {
         return ContentContainer.imageFromColor(col);
     }
 
-    Gem getSpace(int y, int x) {
+    public Gem getSpace(int y, int x) {
         return spaces[y][x];
     }
 
-    void setSpace(int y, int x, Gem col) {
+    public void setSpace(int y, int x, Gem col) {
         spaces[y][x] = col;
+    }
+
+    public void setHasteTimer(int HASTETIMERMAX) {
     }
 }

@@ -1,5 +1,6 @@
 package ggj.summon;
 
+import ggj.Board;
 import ggj.GemType;
 
 /**
@@ -14,5 +15,5 @@ public abstract class Summon {
         this.color = color;
     }
 
-    public abstract void activateSummon();
+    public abstract void activateSummon(Board me, Board them);
 }
