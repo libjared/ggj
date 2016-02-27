@@ -1,4 +1,6 @@
-package ggj;
+package ggj.summon;
+
+import ggj.GemType;
 
 /**
  *
