@@ -44,18 +44,7 @@ public class Board {
         rngBuf = new ArrayList<>();
         ensureBuffer(100);
 
-        testBoard();
         generateFallingGems();
-    }
-
-    private void testBoard() {
-        //test board
-//        for (int x = 0; x < WIDTH; x++) {
-//            int col = randomColor();
-//            for (int y = 6; y < HEIGHT; y++) {
-//                spaces[y][x] = col;
-//            }
-//        }
     }
 
     private boolean kLeftLast;
