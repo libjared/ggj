@@ -258,7 +258,7 @@ public class Board {
     }
 
     private void checkAnyMatchesHere(int x, int y) {
-        for (int dir = 0; dir < 3; dir++) {
+        for (int dir = 0; dir < 4; dir++) {
             ArrayList<Point2D> matchPoints = new ArrayList<>();
 
             GemType matchColor = null;
