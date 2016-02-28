@@ -11,11 +11,9 @@
     <description>Builds, tests, and runs the project ggj.</description>
     <import file="nbproject/build-impl.xml"/>
     <target name="-post-jar">
-        <echo>Copying dlls and jars</echo>
         <copy todir="./dist/lib">
             <fileset dir="./lib"></fileset>
         </copy>
-        <echo>Copying game content</echo>
         <copy todir="./dist/content">
             <fileset dir="./content"></fileset>
         </copy>
