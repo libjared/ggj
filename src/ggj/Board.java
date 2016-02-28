@@ -3,8 +3,6 @@ package ggj;
 import ggj.summon.Summon;
 import ggj.summon.SummonSet;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -273,8 +271,7 @@ public class Board {
 
                 Gem something = getSpace(newY, newX);
 
-                if (something == null) //no idea about this
-                {
+                if (something == null) {
                     continue;
                 }
 
