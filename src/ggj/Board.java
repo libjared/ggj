@@ -161,36 +161,6 @@ public class Board {
         return HEIGHT;
     }
 
-    public GemType getBiggestColor() {
-        HashMap<GemType, Integer> counts = new HashMap<>();
-
-        for (int y = 0; y < HEIGHT; y++) {
-            for (int x = 0; x < WIDTH; x++) {
-                GemType colorHere = getSpace(y, x).getColor();
-
-                Integer thisColor = counts.get(colorHere);
-                if (thisColor == null) {
-                    thisColor = 0;
-                }
-
-                thisColor++;
-
-                counts.put(colorHere, thisColor);
-            }
-        }
-
-        Entry<GemType, Integer> maxEntry = null;
-
-        for (Entry<GemType, Integer> entry : counts.entrySet()) {
-            assert entry.getValue() != null; //if I could use int, I would. no nulls, please.
-            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
-                maxEntry = entry;
-            }
-        }
-        assert maxEntry != null;
-        return maxEntry.getKey();
-    }
-
     private Board getOtherBoard() {
         if (PLAYERONE) {
             return MyGame.right;
