@@ -26,7 +26,7 @@ public class Board {
     float fallingGemY = -3;
     Gem[] fallingGems;
 
-    ArrayList<int[]> markedForDeath;
+    ArrayList<Point2D> markedForDeath;
 
     final int KILLSTOSUMMON = 20;
     int kills = 0;
@@ -363,13 +363,13 @@ public class Board {
         }
 
         //check if already marked
-        for (int[] ded : markedForDeath) {
-            if (ded[0] == x && ded[1] == y) {
+        for (Point2D ded : markedForDeath) {
+            if (ded.getX() == x && ded.getY() == y) {
                 return;
             }
         }
 
-        markedForDeath.add(new int[]{x, y});
+        markedForDeath.add(new Point2D(x, y));
     }
 
     /**
@@ -440,9 +440,9 @@ public class Board {
         }
 
         for (int i = 0; i < markedForDeath.size(); i++) {
-            int[] gem = markedForDeath.get(i);
-            int theX = gem[0];
-            int theY = gem[1];
+            Point2D gem = markedForDeath.get(i);
+            int theX = gem.getX();
+            int theY = gem.getY();
             GemType theColor = getSpace(theY, theX).getColor();
 
             if (summonColor == null) //first hit, set summon color
