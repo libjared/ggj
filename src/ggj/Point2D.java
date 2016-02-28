@@ -5,8 +5,8 @@ public class Point2D {
     private int y;
 
     public Point2D(int x, int y) {
-        this.y = x;
-        this.x = y;
+        this.x = x;
+        this.y = y;
     }
 
     public int getX() {
