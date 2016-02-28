@@ -5,7 +5,6 @@ import ggj.summon.SummonSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -19,7 +18,6 @@ public class Board {
     public static final int HEIGHT = 16;
     private final GemFactory gf;
     private final SummonSet summonSet;
-    public static int redCall = 0;
 
     //none,R,G,B,Y,P is 0 to 5
     Gem[][] spaces;
