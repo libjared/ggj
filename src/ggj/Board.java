@@ -258,13 +258,15 @@ public class Board {
     }
 
     private void checkAnyMatchesHere(int x, int y) {
-        for (int dir = 0; dir < 8; dir++) {
-            ArrayList<int[]> matchPoints = new ArrayList<>();
+        for (int dir = 0; dir < 3; dir++) {
+            ArrayList<Point2D> matchPoints = new ArrayList<>();
 
             GemType matchColor = null;
             for (int i = 0; i < HEIGHT; i++) {
-                int newX = withDirection(dir, i)[0] + x;
-                int newY = withDirection(dir, i)[1] + y;
+                int dx = withDirection(dir, i).getX();
+                int dy = withDirection(dir, i).getY();
+                int newX = x + dx;
+                int newY = y + dy;
                 if (!isValid(newX, newY)) {
                     break;
                 }
@@ -279,7 +281,7 @@ public class Board {
 
                 if (matchColor == null || matchColor == colorHere) {
                     matchColor = colorHere;
-                    matchPoints.add(new int[]{newX, newY});
+                    matchPoints.add(new Point2D(newX, newY));
                 } else { //not the color we're looking for, and said color is already set
                     break;
                 }
@@ -288,8 +290,8 @@ public class Board {
             if (matchPoints.size() >= 3) {
                 //break them
                 for (int i = 0; i < matchPoints.size(); i++) {
-                    int[] gem = matchPoints.get(i);
-                    destroyGem(gem[0], gem[1]);
+                    Point2D gem = matchPoints.get(i);
+                    destroyGem(gem.getX(), gem.getY());
                 }
             }
         }
@@ -403,7 +405,7 @@ public class Board {
         markedForDeath.clear();
     }
 
-    private int[] withDirection(int dir, int n) {
+    private Point2D withDirection(int dir, int n) {
         //dir in range [0, 8). 0 is right, 1 is downright.
         int retX = 0;
         int retY = 0;
@@ -421,7 +423,7 @@ public class Board {
             retY = -n;
         }
 
-        return new int[]{retX, retY};
+        return new Point2D(retX, retY);
     }
 
     private boolean isValid(int x, int y) {
