@@ -150,17 +150,6 @@ public class Board {
         }
     }
 
-    public int findAverageHeight() {
-        for (int y = 0; y < HEIGHT; y++) {
-            for (int x = 0; x < WIDTH; x++) {
-                if (gemExistsAt(x, y)) {
-                    return y;
-                }
-            }
-        }
-        return HEIGHT;
-    }
-
     private Board getOtherBoard() {
         if (PLAYERONE) {
             return MyGame.right;
@@ -619,7 +608,7 @@ public class Board {
         }
     }
 
-    private boolean gemExistsAt(int x, int y) {
+    public boolean gemExistsAt(int x, int y) {
         return getSpace(y, x) != null;
     }
 

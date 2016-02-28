@@ -11,9 +11,22 @@ public class YellowSummon extends Summon {
 
     @Override
     public void activateSummon(Board me, Board them) {
-        int averageHeight = (me.findAverageHeight() + them.findAverageHeight()) / 2;
+        int myH = findAverageHeight(me);
+        int theirH = findAverageHeight(them);
+        int averageHeight = (myH + theirH) / 2;
         me.remakeBoardWithHeight(averageHeight);
         them.remakeBoardWithHeight(averageHeight);
+    }
+
+    private int findAverageHeight(Board which) {
+        for (int y = 0; y < Board.HEIGHT; y++) {
+            for (int x = 0; x < Board.WIDTH; x++) {
+                if (which.gemExistsAt(x, y)) {
+                    return y;
+                }
+            }
+        }
+        return Board.HEIGHT;
     }
 
 }
