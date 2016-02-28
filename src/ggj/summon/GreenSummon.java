@@ -45,7 +45,7 @@ public class GreenSummon extends Summon {
         }
     }
 
-    public GemType getBiggestColor(Board which) {
+    private GemType getBiggestColor(Board which) {
         HashMap<GemType, Integer> counts = new HashMap<>();
 
         for (int y = 0; y < Board.HEIGHT; y++) {
