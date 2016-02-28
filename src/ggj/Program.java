@@ -14,8 +14,8 @@ public class Program {
             AppGameContainer appgc;
             int internalw = 800;
             int internalh = 600;
-            int realwindoww = 1280;
-            int realwindowh = 960;
+            int realwindoww = 800;
+            int realwindowh = 600;
 
             MyGame mg = new MyGame("Gem Monsters", internalw, internalh, realwindoww, realwindowh);
             appgc = new AppGameContainer(mg);
