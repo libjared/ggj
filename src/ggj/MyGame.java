@@ -41,12 +41,19 @@ public class MyGame extends BasicGame {
 
         left = new Board(true);
         right = new Board(false);
-        gc.getInput().initControllers();
-        Controls.start(gc);
+
+        setupControls(gc);
 
         ContentContainer.LoadAllContent();
 
         gc.setShowFPS(false);
+    }
+
+    private void setupControls(GameContainer gc) throws SlickException {
+        Input gcInput = gc.getInput();
+        gcInput.initControllers();
+        left.setController(new KeyboardController(gcInput));
+        right.setController(new ControllerController(gcInput));
     }
 
     boolean kPause;

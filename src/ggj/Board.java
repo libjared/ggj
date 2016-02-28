@@ -9,7 +9,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class Board {
@@ -239,22 +238,12 @@ public class Board {
         kSummonLast = kSummon;
         kDrainLast = kDrain;
 
-        Input inp = gc.getInput();
-        if (PLAYERONE) {
-            kDown = inp.isKeyDown(Input.KEY_DOWN);
-            kLeft = inp.isKeyDown(Input.KEY_LEFT);
-            kRight = inp.isKeyDown(Input.KEY_RIGHT);
-            kShuf = inp.isKeyDown(Input.KEY_Z);
-            kSummon = inp.isKeyDown(Input.KEY_A);
-            kDrain = inp.isKeyDown(Input.KEY_S);
-        } else {
-            kDown = Controls.getDown();
-            kLeft = Controls.getLeft();
-            kRight = Controls.getRight();
-            kShuf = Controls.getShuf();
-            kSummon = Controls.getSummon();
-            kDrain = Controls.getDrain();
-        }
+        kDown = control.getDown();
+        kLeft = control.getLeft();
+        kRight = control.getRight();
+        kShuf = control.getShuf();
+        kSummon = control.getSummon();
+        kDrain = control.getDrain();
     }
 
     final int SHUFFLEANIMMAX = 10;
@@ -676,6 +665,13 @@ public class Board {
         spaces[y][x] = col;
     }
 
-    public void setHasteTimer(int HASTETIMERMAX) {
+    public void setHasteTimer(int newTimer) {
+        this.hasteTimer = newTimer;
+    }
+
+    ControllerProvider control;
+
+    public void setController(ControllerProvider controller) {
+        this.control = controller;
     }
 }
