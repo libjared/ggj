@@ -1,7 +1,7 @@
 package ggj;
 
 import org.newdawn.slick.Input;
-
+//Useable?
 public class ControllerController implements IController {
 
     final private static int SNES_B = 2; //18 on mac

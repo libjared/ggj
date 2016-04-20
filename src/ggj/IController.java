@@ -4,15 +4,15 @@ public interface IController {
     
     void update();
 
-    boolean getDown();
+    boolean hasDown();
 
-    boolean getLeft();
+    boolean hasLeft();
 
-    boolean getRight();
+    boolean hasRight();
 
-    boolean getShuf();
+    boolean hasShuf();
 
-    boolean getSummon();
+    boolean hasSummon();
 
-    boolean getDrain();
+    boolean hasDrain();
 }
