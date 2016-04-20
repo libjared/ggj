@@ -2,7 +2,7 @@ package ggj;
 
 import org.newdawn.slick.Input;
 
-public class KeyboardController implements ControllerProvider {
+public class KeyboardController implements IController {
 
     private final Input gcInput;
 

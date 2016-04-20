@@ -643,9 +643,9 @@ public class Board {
         this.hasteTimer = newTimer;
     }
 
-    ControllerProvider control;
+    IController control;
 
-    public void setController(ControllerProvider controller) {
+    public void setController(IController controller) {
         this.control = controller;
     }
 }

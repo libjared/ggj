@@ -9,15 +9,10 @@ package ggj;
  *
  * @author Jotham Callaway
  */
-public abstract class Players {
-    private Board board;
-    //controller goes here
-    
-    public Players(Board board){
-        this.board = board;
+public class PlayerOne extends Players{
+
+    public PlayerOne(Board board) {
+        super(board);
     }
     
-    public Board getPlayersBoard(){
-        return board;
-    }
 }

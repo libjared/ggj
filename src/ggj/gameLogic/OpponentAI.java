@@ -5,10 +5,17 @@
  */
 package ggj.gameLogic;
 
+import ggj.Board;
+import ggj.Players;
+
 /**
  *
  * @author Jotham Callaway
  */
-public class OpponentAI {
+public class OpponentAI extends Players{
+
+    public OpponentAI(Board board) {
+        super(board);
+    }
     
 }
