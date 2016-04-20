@@ -1,5 +1,6 @@
 package ggj;
 
+import ggj.gameLogic.GemType;
 import java.util.ArrayList;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
