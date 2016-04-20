@@ -1,8 +1,8 @@
 package ggj.summon;
 
 import ggj.Board;
-import ggj.Gem;
-import ggj.GemType;
+import ggj.gameLogic.Gem;
+import ggj.gameLogic.GemType;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
