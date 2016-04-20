@@ -1,7 +1,7 @@
 package ggj.summon;
 
 import ggj.Board;
-import ggj.GemType;
+import ggj.gameLogic.GemType;
 
 public class PurpleSummon extends Summon {
 
