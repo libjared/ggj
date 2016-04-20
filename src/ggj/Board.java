@@ -1,5 +1,8 @@
 package ggj;
 
+import ggj.gameLogic.GemFactory;
+import ggj.gameLogic.Gem;
+import ggj.gameLogic.GemType;
 import ggj.summon.Summon;
 import ggj.summon.SummonSet;
 import java.util.ArrayList;
@@ -24,8 +27,16 @@ public class Board {
     Gem[] fallingGems;
 
     ArrayList<Point2D> markedForDeath;
-
-    final int KILLSTOSUMMON = 20;
+    
+    /*
+    * Going to start these terms 
+    *
+    * Break - the destruction of singular gems
+    *
+    * Match - the destruction of multiple gems
+    */
+    
+    final int KILLSTOSUMMON = 20; //rename BREAKSTOSUMMON
     int kills = 0; //rename gemBreaks
     private GemType summonColor = null;
 
@@ -45,6 +56,7 @@ public class Board {
         fallingGems = gf.generateFallingGems();
     }
 
+    //could these booleans go somewhere else?
     private boolean kLeftLast;
     private boolean kRightLast;
     private boolean kShufLast;
@@ -82,7 +94,7 @@ public class Board {
         return summonSet;
     }
 
-    private void checkForDeath() {
+    private void checkForDeath() { //rename checkForGameOver
         if (gemExistsAt(WIDTH / 2, 0) && !doesNeedGravity()) {
             MyGame.winner = getOtherBoard();
             ContentContainer.getGong().play();
@@ -155,6 +167,7 @@ public class Board {
         return MyGame.left;
     }
 
+    //could gravity be it's own class?
     private void updateGravity() {
         if (doesNeedGravity()) {
             gravTimer++;
@@ -430,6 +443,7 @@ public class Board {
         return x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT;
     }
 
+    //is this global?
     int offsetx = 0;
     int offsety = 0;
 
@@ -446,6 +460,7 @@ public class Board {
         drawSummonBars(g);
     }
 
+    //what if we added numbers on the bar?
     private void drawSummonBars(Graphics g) {
         Color pushCol = g.getColor();
         float pushLW = g.getLineWidth();
@@ -477,6 +492,7 @@ public class Board {
         g.setColor(pushCol);
     }
 
+    //???
     private float wooshyWooshColorThing = 0f;
 
     private static Color colorFromGemType(GemType col) {
