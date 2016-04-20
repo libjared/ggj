@@ -1,8 +1,8 @@
 package ggj.summon;
 
 import ggj.Board;
-import ggj.Gem;
-import ggj.GemType;
+import ggj.gameLogic.Gem;
+import ggj.gameLogic.GemType;
 
 public class RedSummon extends Summon {
 
