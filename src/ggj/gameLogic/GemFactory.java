@@ -1,7 +1,5 @@
 package ggj.gameLogic;
 
-import ggj.gameLogic.Gem;
-import ggj.gameLogic.GemType;
 import java.util.ArrayList;
 import java.util.Random;
 

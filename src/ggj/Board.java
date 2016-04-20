@@ -29,15 +29,15 @@ public class Board {
     ArrayList<Point2D> markedForDeath;
     
     /*
-    * Going to start these terms 
+    * Going to start using these terms 
     *
     * Break - the destruction of singular gems
     *
     * Match - the destruction of multiple gems
     */
     
-    final int KILLSTOSUMMON = 20; //rename BREAKSTOSUMMON
-    int kills = 0; //rename gemBreaks
+    final int BREAKSTOSUMMON = 20; //rename BREAKSTOSUMMON
+    int gemBreaks = 0; //rename gemBreaks
     private GemType summonColor = null;
 
     public boolean PLAYERONE;// bad.
@@ -102,18 +102,18 @@ public class Board {
     }
 
     private void updateSummon() {
-        if (kills >= KILLSTOSUMMON && kSummon && !kSummonLast) {
+        if (gemBreaks >= BREAKSTOSUMMON && kSummon && !kSummonLast) {
             //do the summon
             applySummon();
 
             //then reset
-            kills = 0;
+            gemBreaks = 0;
             summonColor = null;
         }
 
         //if you want your summon meter reset
-        if (kills > 0 && kDrain && !kDrainLast) {
-            kills = 0;
+        if (gemBreaks > 0 && kDrain && !kDrainLast) {
+            gemBreaks = 0;
             summonColor = null;
             ContentContainer.getVanish().play();
         }
@@ -414,7 +414,7 @@ public class Board {
 
             setSpace(theY, theX, null);
         }
-        kills += markedForDeath.size();
+        gemBreaks += markedForDeath.size();
         markedForDeath.clear();
     }
 
@@ -473,8 +473,8 @@ public class Board {
 
         float colScalar = 1f;
 
-        if (kills != 0) {
-            float ratio = kills / (float) KILLSTOSUMMON;
+        if (gemBreaks != 0) {
+            float ratio = gemBreaks / (float) BREAKSTOSUMMON;
             if (ratio >= 1f) {
                 ratio = 1f;
                 wooshyWooshColorThing += 0.1f;
