@@ -26,13 +26,13 @@ public class Board {
     ArrayList<Point2D> markedForDeath;
 
     final int KILLSTOSUMMON = 20;
-    int kills = 0;
+    int kills = 0; //rename gemBreaks
     private GemType summonColor = null;
 
-    public boolean PLAYERONE;
+    public boolean PLAYERONE;// bad.
 
     private int hasteTimer = 0;
-    public static final int HASTETIMERMAX = 7 * 60; //7s
+    public static final int HASTETIMERMAX = 7 * 60; //7s       //moving to purple
 
     public Board(boolean playerOne) throws SlickException {
         PLAYERONE = playerOne;
