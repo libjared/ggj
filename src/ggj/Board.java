@@ -40,13 +40,13 @@ public class Board {
     int gemBreaks = 0; //rename gemBreaks
     private GemType summonColor = null;
 
-    public boolean PLAYERONE;// bad.
+    public String side;
 
     private int hasteTimer = 0;
     public static final int HASTETIMERMAX = 7 * 60; //7s       //moving to purple
 
-    public Board() throws SlickException {
-        //PLAYERONE = playerOne;
+    public Board(String side) throws SlickException {
+        this.side = side;
 
         this.markedForDeath = new ArrayList<>();
         spaces = new Gem[HEIGHT][WIDTH];
@@ -161,10 +161,10 @@ public class Board {
     }
 
     private Board getOtherBoard() {
-        if (PLAYERONE) {
-            return MyGame.right;
+        if (side.equals("left")) {
+            return MyGame.p2.getPlayersBoard();
         }
-        return MyGame.left;
+        return MyGame.p1.getPlayersBoard();
     }
 
     //could gravity be it's own class?
@@ -574,7 +574,7 @@ public class Board {
     private void drawNextGems(Graphics g) {
         int nextX;
         int nextY = 55;
-        if (PLAYERONE) {
+        if (side.equals("left")) {
             nextX = 310;
         } else {
             nextX = 458;

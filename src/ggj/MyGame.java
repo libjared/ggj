@@ -11,7 +11,8 @@ import org.newdawn.slick.opengl.pbuffer.FBOGraphics;
 
 public class MyGame extends BasicGame {
 
-    PlayerOne p1;
+    static PlayerOne p1;
+    static PlayerTwo p2;
     static Board left;
     static Board right;
     static boolean disableAutoFall = false;
@@ -40,9 +41,10 @@ public class MyGame extends BasicGame {
         img = new Image(INTERNALW, INTERNALH);
         fbo = new FBOGraphics(img);
 
-        left = new Board();
+        left = new Board("left");
         p1 = new PlayerOne(left);
-        right = new Board();
+        right = new Board("right");
+        p2 = new PlayerTwo(right);
 
         setupControls(gc);
 
@@ -55,7 +57,7 @@ public class MyGame extends BasicGame {
         Input gcInput = gc.getInput();
         gcInput.initControllers();
         p1.getPlayersBoard().setController(new KeyboardController(gcInput));
-        right.setController(new ControllerController(gcInput));
+        p2.getPlayersBoard().setController(new ControllerController(gcInput));
     }
 
     boolean kPause;
@@ -74,7 +76,7 @@ public class MyGame extends BasicGame {
 
         if (winner == null && !isPausing) {
             p1.getPlayersBoard().update(gc);
-            right.update(gc);
+            p2.getPlayersBoard().update(gc);
         } else if (theInput.isKeyDown(Input.KEY_ENTER)) {
             gc.exit();
         }
@@ -90,7 +92,7 @@ public class MyGame extends BasicGame {
     private void drawWithGraphics(Graphics g) throws SlickException {
         g.drawImage(ContentContainer.getBoardGui(), 0f, 0f);
         p1.getPlayersBoard().draw(g, 30, 30);
-        right.draw(g, INTERNALW - Board.WIDTH * 32 - 30, 30);
+        p2.getPlayersBoard().draw(g, INTERNALW - Board.WIDTH * 32 - 30, 30);
         SpecialEffects.draw(g);
 
         if (winner != null) {
