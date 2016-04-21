@@ -10,40 +10,54 @@ package ggj;
  * @author Jotham Callaway
  */
 public class HumanKeyboardController implements IController{
+    
+    private boolean kLeftLast;
+    private boolean kRightLast;
+    private boolean kShufLast;
+    private boolean kSummonLast;
+    private boolean kDrainLast;
+
+    private boolean kDown;
+    private boolean kLeft;
+    private boolean kRight;
+    private boolean kShuf;
+    private boolean kSummon;
+    private boolean kDrain;
+    private boolean kDownLast;
 
     @Override
     public void update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
     public boolean hasDown() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return kDown && !kDownLast;
     }
 
     @Override
     public boolean hasLeft() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return kLeft && !kLeftLast; 
     }
 
     @Override
     public boolean hasRight() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return kRight && !kRightLast;
     }
 
     @Override
     public boolean hasShuf() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return kShuf && !kShufLast;
     }
 
     @Override
     public boolean hasSummon() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return kSummon && !kSummonLast;
     }
 
     @Override
     public boolean hasDrain() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return kDrain && !kDrainLast;
     }
     
     
