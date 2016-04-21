@@ -1,7 +1,7 @@
 package ggj;
 
 import org.newdawn.slick.Input;
-//Useable?
+//Recommending deletion of this class
 public class KeyboardController implements IController {
 
     private final Input gcInput;

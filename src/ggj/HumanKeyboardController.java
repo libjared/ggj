@@ -5,6 +5,8 @@
  */
 package ggj;
 
+import org.newdawn.slick.Input;
+
 /**
  *
  * @author Jotham Callaway
@@ -24,10 +26,28 @@ public class HumanKeyboardController implements IController{
     private boolean kSummon;
     private boolean kDrain;
     private boolean kDownLast;
+    
+    private final Input gcInput;
+
+    public HumanKeyboardController(Input gcInput) {
+        this.gcInput = gcInput;
+    }
+
 
     @Override
     public void update() {
-        
+        kLeftLast = kLeft;
+        kRightLast = kRight;
+        kShufLast = kShuf;
+        kSummonLast = kSummon;
+        kDrainLast = kDrain;
+
+        kDown = gcInput.isKeyDown(Input.KEY_DOWN);
+        kLeft = gcInput.isKeyDown(Input.KEY_LEFT);
+        kRight = gcInput.isKeyDown(Input.KEY_RIGHT);
+        kShuf = gcInput.isKeyDown(Input.KEY_UP);
+        kSummon = gcInput.isKeyDown(Input.KEY_A);
+        kDrain = gcInput.isKeyDown(Input.KEY_S);
     }
 
     @Override
