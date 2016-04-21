@@ -11,6 +11,7 @@ import org.newdawn.slick.opengl.pbuffer.FBOGraphics;
 
 public class MyGame extends BasicGame {
 
+    PlayerOne p1;
     static Board left;
     static Board right;
     static boolean disableAutoFall = false;
@@ -40,6 +41,7 @@ public class MyGame extends BasicGame {
         fbo = new FBOGraphics(img);
 
         left = new Board();
+        p1 = new PlayerOne(left);
         right = new Board();
 
         setupControls(gc);
@@ -52,7 +54,7 @@ public class MyGame extends BasicGame {
     private void setupControls(GameContainer gc) throws SlickException {
         Input gcInput = gc.getInput();
         gcInput.initControllers();
-        left.setController(new KeyboardController(gcInput));
+        p1.getPlayersBoard().setController(new KeyboardController(gcInput));
         right.setController(new ControllerController(gcInput));
     }
 
@@ -71,7 +73,7 @@ public class MyGame extends BasicGame {
         }
 
         if (winner == null && !isPausing) {
-            left.update(gc);
+            p1.getPlayersBoard().update(gc);
             right.update(gc);
         } else if (theInput.isKeyDown(Input.KEY_ENTER)) {
             gc.exit();
@@ -87,7 +89,7 @@ public class MyGame extends BasicGame {
 
     private void drawWithGraphics(Graphics g) throws SlickException {
         g.drawImage(ContentContainer.getBoardGui(), 0f, 0f);
-        left.draw(g, 30, 30);
+        p1.getPlayersBoard().draw(g, 30, 30);
         right.draw(g, INTERNALW - Board.WIDTH * 32 - 30, 30);
         SpecialEffects.draw(g);
 

@@ -81,7 +81,7 @@ public class Board {
 
         updateGravity();
 
-        checkForDeath();
+        checkForGameOver();
 
         updateSummon();
     }
@@ -94,7 +94,7 @@ public class Board {
         return summonSet;
     }
 
-    private void checkForDeath() { //rename checkForGameOver
+    private void checkForGameOver() { 
         if (gemExistsAt(WIDTH / 2, 0) && !doesNeedGravity()) {
             MyGame.winner = getOtherBoard();
             ContentContainer.getGong().play();
