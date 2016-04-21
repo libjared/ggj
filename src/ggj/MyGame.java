@@ -39,8 +39,8 @@ public class MyGame extends BasicGame {
         img = new Image(INTERNALW, INTERNALH);
         fbo = new FBOGraphics(img);
 
-        left = new Board(true);
-        right = new Board(false);
+        left = new Board();
+        right = new Board();
 
         setupControls(gc);
 

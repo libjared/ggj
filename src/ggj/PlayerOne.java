@@ -15,4 +15,9 @@ public class PlayerOne extends Players{
         super(board);
     }
     
+    @Override
+    public String toString(){
+        return "Player 1";
+    }
+    
 }

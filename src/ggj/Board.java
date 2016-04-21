@@ -45,8 +45,8 @@ public class Board {
     private int hasteTimer = 0;
     public static final int HASTETIMERMAX = 7 * 60; //7s       //moving to purple
 
-    public Board(boolean playerOne) throws SlickException {
-        PLAYERONE = playerOne;
+    public Board() throws SlickException {
+        //PLAYERONE = playerOne;
 
         this.markedForDeath = new ArrayList<>();
         spaces = new Gem[HEIGHT][WIDTH];
