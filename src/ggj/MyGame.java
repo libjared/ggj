@@ -40,25 +40,22 @@ public class MyGame extends BasicGame {
     public void init(GameContainer gc) throws SlickException {
         img = new Image(INTERNALW, INTERNALH);
         fbo = new FBOGraphics(img);
-
+        Input gcInput = gc.getInput();
+        gcInput.initControllers();
         left = new Board("left");
-        p1 = new PlayerOne(left);
+        p1 = new PlayerOne(left, new HumanKeyboardController(gcInput));
         right = new Board("right");
         p2 = new PlayerTwo(right);
 
-        setupControls(gc);
+        
+        
+        p2.getPlayersBoard().setController(new ControllerController(gcInput));
 
         ContentContainer.LoadAllContent();
 
         gc.setShowFPS(false);
     }
 
-    private void setupControls(GameContainer gc) throws SlickException {
-        Input gcInput = gc.getInput();
-        gcInput.initControllers();
-        p1.getPlayersBoard().setController(new KeyboardController(gcInput));
-        p2.getPlayersBoard().setController(new ControllerController(gcInput));
-    }
 
     boolean kPause;
     boolean kPauseLast;

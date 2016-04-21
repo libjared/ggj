@@ -11,7 +11,7 @@ package ggj;
  */
 public abstract class Players {
     private Board board;
-    //controller goes here
+    
     
     public Players(Board board){
         this.board = board;

@@ -10,14 +10,20 @@ package ggj;
  * @author Jotham Callaway
  */
 public class PlayerOne extends Players{
+    private HumanKeyboardController keyControls;
 
-    public PlayerOne(Board board) {
+    public PlayerOne(Board board, HumanKeyboardController keyControls) {
         super(board);
+        this.keyControls = keyControls;
     }
     
     @Override
     public String toString(){
         return "Player 1";
+    }
+    
+    public HumanKeyboardController getKeyControls(){
+        return keyControls;
     }
     
 }

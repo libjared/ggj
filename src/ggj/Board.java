@@ -18,6 +18,7 @@ public class Board {
     public static final int HEIGHT = 16;
     private final GemFactory gf;
     private final SummonSet summonSet;
+    private HumanKeyboardController keyControl;
 
     //none,R,G,B,Y,P is 0 to 5
     Gem[][] spaces;
@@ -51,24 +52,13 @@ public class Board {
         this.markedForDeath = new ArrayList<>();
         spaces = new Gem[HEIGHT][WIDTH];
 
+        keyControl = new HumanKeyboardController();
         gf = new GemFactory();
         summonSet = new SummonSet();
         fallingGems = gf.generateFallingGems();
     }
 
-    //could these booleans go somewhere else?
-    private boolean kLeftLast;
-    private boolean kRightLast;
-    private boolean kShufLast;
-    private boolean kSummonLast;
-    private boolean kDrainLast;
-
-    private boolean kDown;
-    private boolean kLeft;
-    private boolean kRight;
-    private boolean kShuf;
-    private boolean kSummon;
-    private boolean kDrain;
+    
 
     public void update(GameContainer gc) {
         updateInputs(gc);
@@ -200,21 +190,7 @@ public class Board {
         return false;
     }
 
-    private void updateInputs(GameContainer gc) {
-        //last
-        kLeftLast = kLeft;
-        kRightLast = kRight;
-        kShufLast = kShuf;
-        kSummonLast = kSummon;
-        kDrainLast = kDrain;
-
-        kDown = control.getDown();
-        kLeft = control.getLeft();
-        kRight = control.getRight();
-        kShuf = control.getShuf();
-        kSummon = control.getSummon();
-        kDrain = control.getDrain();
-    }
+    
 
     final int SHUFFLEANIMMAX = 10;
     int shuffleAnim = 0;
@@ -641,11 +617,5 @@ public class Board {
 
     public void setHasteTimer(int newTimer) {
         this.hasteTimer = newTimer;
-    }
-
-    IController control;
-
-    public void setController(IController controller) {
-        this.control = controller;
     }
 }
