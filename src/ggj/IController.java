@@ -1,6 +1,6 @@
 package ggj;
 
-public interface ControllerProvider {
+public interface IController {
 
     boolean getDown();
 
