@@ -53,7 +53,7 @@ public class MyGame extends BasicGame {
         Input gcInput = gc.getInput();
         gcInput.initControllers();
         left.setController(new KeyboardController(gcInput));
-        right.setController(new ControllerController(gcInput));
+        right.setController(new KeyboardController(gcInput));
     }
 
     boolean kPause;
