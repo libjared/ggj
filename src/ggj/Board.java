@@ -516,16 +516,16 @@ public class Board {
                 if (gem == null) {
                     continue;
                 }
-                drawGem(g, gem, x, y);
+                gem.drawGem(g, x, y, this);
             }
         }
     }
 
     private void drawFallingGems(Graphics g) {
         if (shuffleAnim == 0) {
-            drawGem(g, fallingGems[0], fallingGemX, fallingGemY);
-            drawGem(g, fallingGems[1], fallingGemX, fallingGemY + 1);
-            drawGem(g, fallingGems[2], fallingGemX, fallingGemY + 2);
+            fallingGems[0].drawGem(g, fallingGemX, fallingGemY, this);
+            fallingGems[1].drawGem(g, fallingGemX, fallingGemY + 1, this);
+            fallingGems[2].drawGem(g, fallingGemX, fallingGemY + 2, this);
         } else {
             float ratio = shuffleAnim / (float) SHUFFLEANIMMAX;
             int finalX = fallingGemX * 32 + offsetx;
@@ -535,7 +535,7 @@ public class Board {
             Gem color1 = fallingGems[0];
             finalY = fallingGemY * 32 + offsety;
             float finalBottomY = (fallingGemY + 1 - ratio) * 32 + offsety;
-            g.drawImage(imageCol(color1.getColor()),
+            g.drawImage(ContentContainer.imageFromColor(color1.getColor()),
                     finalX, finalY,
                     finalX + 32, finalBottomY,
                     0, 64 * ratio, 64, 64);
@@ -544,7 +544,7 @@ public class Board {
             Gem color2 = fallingGems[1];
             finalY = (fallingGemY + 1 - ratio) * 32 + offsety;
             finalBottomY = finalY + 32;
-            g.drawImage(imageCol(color2.getColor()),
+            g.drawImage(ContentContainer.imageFromColor(color2.getColor()),
                     finalX, finalY,
                     finalX + 32, finalBottomY,
                     0, 0, 64, 64);
@@ -553,7 +553,7 @@ public class Board {
             Gem color3 = fallingGems[2];
             finalY = (fallingGemY + 2 - ratio) * 32 + offsety;
             finalBottomY = finalY + 32;
-            g.drawImage(imageCol(color3.getColor()),
+            g.drawImage(ContentContainer.imageFromColor(color3.getColor()),
                     finalX, finalY,
                     finalX + 32, finalBottomY,
                     0, 0, 64, 64);
@@ -561,7 +561,7 @@ public class Board {
             //fourth! (from third)
             finalY = (fallingGemY + 3 - ratio) * 32 + offsety;
             finalBottomY = (fallingGemY + 3) * 32 + offsety;
-            g.drawImage(imageCol(color1.getColor()),
+            g.drawImage(ContentContainer.imageFromColor(color1.getColor()),
                     finalX, finalY,
                     finalX + 32, finalBottomY,
                     0, 0, 64, ratio * 64);
@@ -580,18 +580,12 @@ public class Board {
         GemType[] nextThree = gf.peekNextThree();
 
         for (int i = 0; i < nextThree.length; i++) {
-            g.drawImage(imageCol(nextThree[i]),
+            g.drawImage(ContentContainer.imageFromColor(nextThree[i]),
                     nextX, nextY + i * 32,
                     nextX + 32, nextY + (i + 1) * 32,
                     0, 0,
                     64, 64);
         }
-    }
-
-    private void drawGem(Graphics g, Gem color, int x, float y) {
-        int finalX = x * 32 + offsetx;
-        float finalY = y * 32 + offsety;
-        g.drawImage(imageCol(color.getColor()), finalX, finalY, finalX + 32, finalY + 32, 0, 0, 64, 64);
     }
 
     private void collideFallingGems() {
@@ -622,10 +616,6 @@ public class Board {
 
     public boolean gemExistsAt(int x, int y) {
         return getSpace(y, x) != null;
-    }
-
-    private Image imageCol(GemType col) {
-        return ContentContainer.imageFromColor(col);
     }
 
     public Gem getSpace(int y, int x) {
