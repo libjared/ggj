@@ -11,12 +11,9 @@ import org.newdawn.slick.opengl.pbuffer.FBOGraphics;
 
 public class MyGame extends BasicGame {
 
-    static PlayerOne p1;
-    static PlayerTwo p2;
-    static Board left;
-    static Board right;
+    private static PlayerBase p1;
+    private static PlayerBase p2;
     static boolean disableAutoFall = false;
-    static Board winner;
 
     static int INTERNALW;
     static int INTERNALH;
@@ -41,21 +38,13 @@ public class MyGame extends BasicGame {
         img = new Image(INTERNALW, INTERNALH);
         fbo = new FBOGraphics(img);
         Input gcInput = gc.getInput();
-        gcInput.initControllers();
-        left = new Board("left");
-        p1 = new PlayerOne(left, new HumanKeyboardController(gcInput));
-        right = new Board("right");
-        p2 = new PlayerTwo(right);
-
-        
-        
-        p2.getPlayersBoard().setController(new ControllerController(gcInput));
+        p1 = new HumanPlayer(gcInput);
+        p2 = new HumanPlayer(gcInput);
 
         ContentContainer.LoadAllContent();
 
         gc.setShowFPS(false);
     }
-
 
     boolean kPause;
     boolean kPauseLast;
@@ -71,12 +60,12 @@ public class MyGame extends BasicGame {
             isPausing = !isPausing;
         }
 
-        if (winner == null && !isPausing) {
-            p1.getPlayersBoard().update(gc);
-            p2.getPlayersBoard().update(gc);
-        } else if (theInput.isKeyDown(Input.KEY_ENTER)) {
-            gc.exit();
-        }
+        //if (winner == null && !isPausing) {
+            p1.update();
+            p2.update();
+        //} else if (theInput.isKeyDown(Input.KEY_ENTER)) {
+        //    gc.exit();
+        //}
         SpecialEffects.update();
     }
 
@@ -88,26 +77,26 @@ public class MyGame extends BasicGame {
 
     private void drawWithGraphics(Graphics g) throws SlickException {
         g.drawImage(ContentContainer.getBoardGui(), 0f, 0f);
-        p1.getPlayersBoard().draw(g, 30, 30);
-        p2.getPlayersBoard().draw(g, INTERNALW - Board.WIDTH * 32 - 30, 30);
+        p1.draw(g, 30, 30); //.getPlayersBoard().draw(g, 30, 30);
+        p2.draw(g, INTERNALW - Board.WIDTH * 32 - 30, 30); //.getPlayersBoard().draw(g, INTERNALW - Board.WIDTH * 32 - 30, 30);
         SpecialEffects.draw(g);
 
-        if (winner != null) {
-            String str = "PLAYER ";
-            if (winner == left) {
-                str += "1";
-            } else {
-                str += "2";
-            }
-            str += " IS THE WINNER!";
-
-            Font f = g.getFont();
-            int strW = f.getWidth(str);
-            int centerOnX = MyGame.INTERNALW / 2;
-            int centerOnY = MyGame.INTERNALH - 30;
-            int finalX = centerOnX - strW / 2;
-            int finalY = centerOnY;
-            g.drawString(str, finalX, finalY);
-        }
+//        if (winner != null) {
+//            String str = "PLAYER ";
+//            if (winner == left) {
+//                str += "1";
+//            } else {
+//                str += "2";
+//            }
+//            str += " IS THE WINNER!";
+//
+//            Font f = g.getFont();
+//            int strW = f.getWidth(str);
+//            int centerOnX = MyGame.INTERNALW / 2;
+//            int centerOnY = MyGame.INTERNALH - 30;
+//            int finalX = centerOnX - strW / 2;
+//            int finalY = centerOnY;
+//            g.drawString(str, finalX, finalY);
+//        }
     }
 }

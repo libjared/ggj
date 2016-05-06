@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ggj;
 
 import org.newdawn.slick.Input;
@@ -25,7 +20,6 @@ public class HumanKeyboardController implements IController{
     private boolean kShuf;
     private boolean kSummon;
     private boolean kDrain;
-    private boolean kDownLast;
     
     private final Input gcInput;
 
@@ -51,8 +45,8 @@ public class HumanKeyboardController implements IController{
     }
 
     @Override
-    public boolean hasDown() {
-        return kDown && !kDownLast;
+    public boolean hasFastFall() {
+        return kDown;
     }
 
     @Override
@@ -79,6 +73,4 @@ public class HumanKeyboardController implements IController{
     public boolean hasDrain() {
         return kDrain && !kDrainLast;
     }
-    
-    
 }

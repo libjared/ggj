@@ -18,7 +18,6 @@ public class Board {
     public static final int HEIGHT = 16;
     private final GemFactory gf;
     private final SummonSet summonSet;
-    private HumanKeyboardController keyControl;
 
     //none,R,G,B,Y,P is 0 to 5
     Gem[][] spaces;
@@ -46,23 +45,16 @@ public class Board {
     private int hasteTimer = 0;
     public static final int HASTETIMERMAX = 7 * 60; //7s       //moving to purple
 
-    public Board(String side) throws SlickException {
-        this.side = side;
-
+    public Board() throws SlickException {
         this.markedForDeath = new ArrayList<>();
         spaces = new Gem[HEIGHT][WIDTH];
-
-        keyControl = new HumanKeyboardController();
+        
         gf = new GemFactory();
         summonSet = new SummonSet();
         fallingGems = gf.generateFallingGems();
     }
 
-    
-
-    public void update(GameContainer gc) {
-        updateInputs(gc);
-
+    public void update() {
         updateFallingGems();
 
         findMatches();
@@ -92,7 +84,7 @@ public class Board {
     }
 
     private void updateSummon() {
-        if (gemBreaks >= BREAKSTOSUMMON && kSummon && !kSummonLast) {
+        if (gemBreaks >= BREAKSTOSUMMON && in) {
             //do the summon
             applySummon();
 
