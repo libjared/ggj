@@ -61,7 +61,7 @@ public class MyGame extends BasicGame {
     boolean isPausing;
 
     @Override
-    public void update(GameContainer gc, int i) throws SlickException {
+    public void update(GameContainer gc, int deltaMs) throws SlickException {
         Input theInput = gc.getInput();
 
         kPauseLast = kPause;
