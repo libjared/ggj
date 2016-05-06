@@ -607,7 +607,7 @@ public class Board {
 
             ContentContainer.getDink().play(1f + (float) Math.random() * 0.3f, 1f);
 
-            gf.generateFallingGems();
+            fallingGems = gf.generateFallingGems();
 
             fallingGemX = WIDTH / 2;
             fallingGemY = -3;
