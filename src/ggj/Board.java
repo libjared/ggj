@@ -1,8 +1,5 @@
 package ggj;
 
-import ggj.gameLogic.GemFactory;
-import ggj.gameLogic.Gem;
-import ggj.gameLogic.GemType;
 import ggj.summon.Summon;
 import ggj.summon.SummonSet;
 import java.util.ArrayList;
