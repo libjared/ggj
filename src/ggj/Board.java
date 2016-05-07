@@ -604,6 +604,7 @@ public class Board {
             if (isValid(hitX, hitY - 3)) {
                 setSpace(hitY - 3, fallingGemX, fallingGems[0]);
             }
+            
 
             ContentContainer.getDink().play(1f + (float) Math.random() * 0.3f, 1f);
 
